@@ -1,7 +1,7 @@
 import { defineManifest } from '@crxjs/vite-plugin';
 import packageJson from './package.json';
 
-const PRIVACY_POLICY_URL = 'https://eladtvil.github.io/wa-lead-helper/privacy.html';
+const PRIVACY_POLICY_URL = 'https://eladperlson.github.io/wa-lead-helper/privacy.html';
 
 export default defineManifest({
   manifest_version: 3,
