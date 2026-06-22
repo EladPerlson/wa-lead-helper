@@ -1,0 +1,176 @@
+export const he = {
+  appName: 'WA Lead Helper',
+  appSubtitle: 'ניהול לידים חכם ל-WhatsApp',
+
+  tabs: {
+    notes: 'הערות',
+    tags: 'תגיות',
+    replies: 'תשובות',
+    reminders: 'תזכורות',
+    history: 'היסטוריה',
+    customers: 'לקוחות',
+    settings: 'הגדרות',
+  },
+
+  notes: {
+    title: 'הערות על הלקוח',
+    placeholder: 'הקלד הערה...',
+    save: 'שמור',
+    saved: 'נשמר בהצלחה',
+    saving: 'שומר...',
+    empty: 'אין הערות עדיין',
+  },
+
+  tags: {
+    title: 'תגיות',
+    addTag: 'הוסף תגית',
+    tagName: 'שם התגית',
+    tagColor: 'צבע',
+    create: 'צור תגית',
+    cancel: 'ביטול',
+    noTags: 'לא נבחרו תגיות',
+    remove: 'הסר',
+    saveTags: 'שמור תגיות',
+    savedSuccess: 'התגיות נשמרו בהצלחה',
+    saving: 'שומר תגיות...',
+  },
+
+  replies: {
+    title: 'תשובות מוכנות',
+    search: 'חיפוש',
+    searchPlaceholder: 'חפש תשובה...',
+    add: 'הוסף תשובה',
+    addPlaceholder: 'הקלד תשובה חדשה...',
+    delete: 'מחק',
+    empty: 'אין תשובות מוכנות',
+    inserted: 'התשובה הוכנסה לצ\'אט',
+    noResults: 'לא נמצאו תוצאות',
+  },
+
+  reminders: {
+    title: 'תזכורות',
+    add: 'הוסף תזכורת',
+    titleLabel: 'כותרת',
+    titlePlaceholder: 'למשל: לחזור ללקוח',
+    dateLabel: 'תאריך',
+    timeLabel: 'שעה',
+    create: 'צור תזכורת',
+    delete: 'מחק',
+    complete: 'סמן כהושלם',
+    completed: 'הושלם',
+    empty: 'אין תזכורות',
+    upcoming: 'תזכורות קרובות',
+    past: 'תזכורות שעברו',
+    scheduled: 'התזכורת נקבעה בהצלחה',
+    invalidDate: 'יש לבחור תאריך ושעה עתידיים',
+  },
+
+  history: {
+    title: 'היסטוריית לקוח',
+    createdAt: 'תאריך יצירה',
+    templatesUsed: 'מספר שימושים בתשובות מוכנות',
+    notes: 'הערות',
+    tags: 'תגיות',
+    upcomingReminders: 'תזכורות קרובות',
+    noContact: 'בחר שיחה כדי לראות היסטוריה',
+    noNotes: 'אין הערות',
+    noTags: 'אין תגיות',
+    noReminders: 'אין תזכורות קרובות',
+  },
+
+  settings: {
+    title: 'הגדרות',
+    darkMode: 'מצב כהה',
+    export: 'ייצוא נתונים',
+    import: 'ייבוא נתונים',
+    deleteAll: 'מחק הכל',
+    exportSuccess: 'הנתונים יוצאו בהצלחה',
+    importSuccess: 'הנתונים יובאו בהצלחה',
+    importError: 'שגיאה בייבוא הנתונים',
+    deleteConfirmTitle: 'מחיקת כל הנתונים',
+    deleteConfirmMessage: 'האם אתה בטוח? פעולה זו תמחק את כל ההערות, התגיות, התשובות והתזכורות. לא ניתן לשחזר.',
+    deleteConfirm: 'כן, מחק הכל',
+    cancel: 'ביטול',
+    deleted: 'כל הנתונים נמחקו',
+    privacyPolicy: 'מדיניות פרטיות',
+  },
+
+  contact: {
+    noChat: 'לא נבחרה שיחה',
+    openChat: 'פתח שיחה ב-WhatsApp כדי להתחיל',
+    detected: 'שיחה פעילה',
+    loadingDetails: 'טוען פרטי לקוח...',
+  },
+
+  popup: {
+    title: 'WA Lead Helper',
+    subtitle: 'עוזר לידים ל-WhatsApp Web',
+    openWhatsApp: 'פתח WhatsApp Web',
+    status: 'סטטוס',
+    active: 'פעיל',
+    contactsCount: 'אנשי קשר במערכת',
+    goToWhatsApp: 'עבור ל-WhatsApp Web כדי להשתמש בתוסף',
+    privacyPolicy: 'מדיניות פרטיות',
+  },
+
+  notifications: {
+    title: 'תזכורת',
+    message: 'צריך לחזור ללקוח',
+    openTask: 'יש לך משימה פתוחה',
+  },
+
+  common: {
+    close: 'סגור',
+    save: 'שמור',
+    cancel: 'ביטול',
+    delete: 'מחק',
+    loading: 'טוען...',
+    error: 'אירעה שגיאה',
+    success: 'בוצע בהצלחה',
+  },
+
+  toggle: {
+    open: 'פתח עוזר לידים',
+    close: 'סגור עוזר לידים',
+  },
+
+  contextInvalidated: {
+    title: 'התוסף עודכן',
+    message: 'WA Lead Helper עודכן או נטען מחדש. רענן את WhatsApp Web כדי להמשיך.',
+    refresh: 'רענן את הדף',
+  },
+
+  reminderPopup: {
+    title: 'תזכורת',
+    dateTime: 'תאריך ושעה',
+    customer: 'לקוח',
+    phone: 'טלפון',
+    openWhatsApp: 'פתח WhatsApp',
+    addToCalendar: 'הוסף ליומן (טלפון)',
+    markComplete: 'סמן כהושלם',
+    notFound: 'התזכורת לא נמצאה',
+    viewDetails: 'צפה בפרטים',
+  },
+
+  customers: {
+    title: 'לקוחות',
+    search: 'חיפוש לקוח',
+    searchPlaceholder: 'חפש לפי שם או טלפון...',
+    empty: 'אין לקוחות עדיין',
+    noResults: 'לא נמצאו לקוחות',
+    expand: 'פרטים מלאים',
+    openChat: 'פתח שיחה',
+    notesPreview: 'הערות',
+    upcomingReminder: 'תזכורת קרובה',
+    noNotes: 'אין הערות',
+    noTags: 'אין תגיות',
+    noReminders: 'אין תזכורות',
+    templatesUsed: 'שימושים בתשובות מוכנות',
+    createdAt: 'תאריך יצירה',
+    allReminders: 'כל התזכורות',
+    allTags: 'תגיות',
+    allNotes: 'הערות מלאות',
+  },
+} as const;
+
+export type HeStrings = typeof he;
