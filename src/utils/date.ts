@@ -57,6 +57,11 @@ export function getReminderTimestamp(date: string, time: string): number {
   return new Date(`${date}T${time}`).getTime();
 }
 
+export function isReminderDue(reminder: { date: string; time: string; completed: boolean }): boolean {
+  if (reminder.completed) return false;
+  return getReminderTimestamp(reminder.date, reminder.time) <= Date.now();
+}
+
 export function sortRemindersByDate<T extends { date: string; time: string; completed: boolean }>(
   reminders: T[],
 ): T[] {

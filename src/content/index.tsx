@@ -8,6 +8,7 @@ import '@/styles/globals.css';
 import type { ChatDetectionState, MessageType } from '@/types';
 import { observeChatChanges, adjustWhatsAppLayout, openChatForContact } from '@/utils/waDom';
 import { startTagHighlighter } from './tagHighlighter';
+import { startReminderPoller } from './reminderPoller';
 import { handleChromeError, startContextWatcher } from '@/utils/extensionContext';
 
 function App() {
@@ -38,12 +39,13 @@ function App() {
   }, [isOpen]);
 
   useEffect(() => {
+    return startReminderPoller(setActiveReminderId);
+  }, []);
+
+  useEffect(() => {
     const listener = (message: MessageType) => {
       if (message.type === 'OPEN_CHAT') {
         openChatForContact(message.phoneNumber, message.displayName);
-      }
-      if (message.type === 'SHOW_REMINDER_OVERLAY') {
-        setActiveReminderId(message.reminderId);
       }
     };
 
@@ -78,6 +80,7 @@ function App() {
           listContact={listContact}
           chatSwitching={chatSwitching}
           onClose={() => setIsOpen(false)}
+          onOpenReminder={setActiveReminderId}
         />
       )}
     </>

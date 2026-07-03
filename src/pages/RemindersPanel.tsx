@@ -2,13 +2,11 @@ import { useState } from 'react';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Card } from '@/components/Card';
-import { useReminders } from '@/hooks/useReminders';
 import { ContactPanelGate } from '@/components/ContactPanelGate';
 import { he } from '@/i18n/he';
 import type { ContactData, DetectedContact, Reminder } from '@/types';
 import { formatDateTimeHe, isFutureDateTime, sortRemindersByDate, toDateInputValue, toTimeInputValue } from '@/utils/date';
 import { generateId } from '@/utils/id';
-import { safeRuntimeSendMessage } from '@/utils/extensionContext';
 
 interface RemindersPanelProps {
   contact: ContactData | null;
@@ -16,18 +14,21 @@ interface RemindersPanelProps {
   contactLoading?: boolean;
   onUpdate: (updates: Partial<Omit<ContactData, 'phoneNumber'>>) => Promise<ContactData | null>;
   onToast: (message: string, type?: 'success' | 'error' | 'info') => void;
+  onOpenReminder: (reminderId: string) => void;
 }
 
-export function RemindersPanel({ contact, detectedContact, contactLoading, onUpdate, onToast }: RemindersPanelProps) {
-  const { scheduleReminder, cancelReminder } = useReminders();
+export function RemindersPanel({
+  contact,
+  detectedContact,
+  contactLoading,
+  onUpdate,
+  onToast,
+  onOpenReminder,
+}: RemindersPanelProps) {
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState('');
   const [date, setDate] = useState(toDateInputValue());
   const [time, setTime] = useState(toTimeInputValue(new Date(Date.now() + 3600000)));
-
-  const handleOpenPopup = async (reminder: Reminder) => {
-    await safeRuntimeSendMessage({ type: 'OPEN_REMINDER_POPUP', reminderId: reminder.id });
-  };
 
   return (
     <ContactPanelGate
@@ -48,9 +49,7 @@ export function RemindersPanel({ contact, detectedContact, contactLoading, onUpd
           setTime={setTime}
           onUpdate={onUpdate}
           onToast={onToast}
-          scheduleReminder={scheduleReminder}
-          cancelReminder={cancelReminder}
-          handleOpenPopup={handleOpenPopup}
+          onOpenReminder={onOpenReminder}
         />
       )}
     </ContactPanelGate>
@@ -69,9 +68,7 @@ function RemindersPanelContent({
   setTime,
   onUpdate,
   onToast,
-  scheduleReminder,
-  cancelReminder,
-  handleOpenPopup,
+  onOpenReminder,
 }: {
   contact: ContactData;
   showForm: boolean;
@@ -84,9 +81,7 @@ function RemindersPanelContent({
   setTime: (v: string) => void;
   onUpdate: RemindersPanelProps['onUpdate'];
   onToast: RemindersPanelProps['onToast'];
-  scheduleReminder: ReturnType<typeof useReminders>['scheduleReminder'];
-  cancelReminder: ReturnType<typeof useReminders>['cancelReminder'];
-  handleOpenPopup: (reminder: Reminder) => Promise<void>;
+  onOpenReminder: RemindersPanelProps['onOpenReminder'];
 }) {
   const reminders = sortRemindersByDate(contact.reminders);
 
@@ -109,7 +104,6 @@ function RemindersPanelContent({
 
     const updatedReminders = [...contact.reminders, reminder];
     await onUpdate({ reminders: updatedReminders });
-    await scheduleReminder(reminder);
 
     setTitle('');
     setShowForm(false);
@@ -117,14 +111,12 @@ function RemindersPanelContent({
   };
 
   const handleDelete = async (reminder: Reminder) => {
-    await cancelReminder(reminder.id);
     await onUpdate({
       reminders: contact.reminders.filter((r) => r.id !== reminder.id),
     });
   };
 
   const handleComplete = async (reminder: Reminder) => {
-    await cancelReminder(reminder.id);
     await onUpdate({
       reminders: contact.reminders.map((r) =>
         r.id === reminder.id ? { ...r, completed: true } : r,
@@ -163,7 +155,10 @@ function RemindersPanelContent({
                     🗑️
                   </button>
                 </div>
-                <div className="flex-1 text-right cursor-pointer" onClick={() => handleOpenPopup(reminder)}>
+                <div
+                  className="flex-1 text-right cursor-pointer"
+                  onClick={() => onOpenReminder(reminder.id)}
+                >
                   <p className="text-sm font-medium text-notion-text hover:text-notion-accent transition-colors">
                     {reminder.title}
                   </p>

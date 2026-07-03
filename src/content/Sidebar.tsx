@@ -7,6 +7,7 @@ import { useTags } from '@/hooks/useStorageLists';
 import { useToast } from '@/hooks/useToast';
 import { applyThemeToElement } from '@/hooks/useTheme';
 import { he } from '@/i18n/he';
+import { AdminPanel } from '@/pages/AdminPanel';
 import { CustomersPanel } from '@/pages/CustomersPanel';
 import { HistoryPanel } from '@/pages/HistoryPanel';
 import { NotesPanel } from '@/pages/NotesPanel';
@@ -21,6 +22,8 @@ import { getPrimaryTagColor, contactsReferToSamePerson } from '@/utils/contactMa
 import { adjustWhatsAppLayout } from '@/utils/waDom';
 import { isContactDataReady } from '@/components/ContactPanelGate';
 import { ContactLoadingScreen } from '@/components/ContactLoadingScreen';
+import { AuthScreen } from '@/components/AuthScreen';
+import { useAuth } from '@/hooks/useAuth';
 
 const CONTACT_TABS: TabId[] = ['notes', 'tags', 'replies', 'reminders'];
 interface SidebarProps {
@@ -28,11 +31,13 @@ interface SidebarProps {
   listContact: DetectedContact | null;
   chatSwitching: boolean;
   onClose: () => void;
+  onOpenReminder: (reminderId: string) => void;
 }
 
-export function Sidebar({ contact, listContact, chatSwitching, onClose }: SidebarProps) {
+export function Sidebar({ contact, listContact, chatSwitching, onClose, onOpenReminder }: SidebarProps) {
   const [activeTab, setActiveTab] = useState<TabId>('notes');
   const { settings } = useSettings();
+  const auth = useAuth();
 
   const targetContact =
     listContact && contact && !contactsReferToSamePerson(listContact, contact)
@@ -63,6 +68,12 @@ export function Sidebar({ contact, listContact, chatSwitching, onClose }: Sideba
     const el = document.getElementById('wa-lead-helper-sidebar');
     if (el) applyThemeToElement(el, settings.darkMode);
   }, [settings.darkMode]);
+
+  useEffect(() => {
+    if (activeTab === 'admin' && !auth.isAdmin) {
+      setActiveTab('notes');
+    }
+  }, [activeTab, auth.isAdmin]);
 
   const handleUpdate = useCallback(
     async (updates: Parameters<typeof updateContact>[0]) => {
@@ -139,10 +150,14 @@ export function Sidebar({ contact, listContact, chatSwitching, onClose }: Sideba
         </div>
       </header>
 
-      <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
+      {auth.session && <TabBar activeTab={activeTab} onTabChange={setActiveTab} showAdmin={auth.isAdmin} />}
 
       <main className="flex-1 overflow-y-auto wa-lh-scroll">
-        {showContactLoading ? (
+        {auth.loading ? (
+          <p className="text-sm text-notion-muted text-center pt-10">{he.common.loading}</p>
+        ) : !auth.session ? (
+          <AuthScreen auth={auth} />
+        ) : showContactLoading ? (
           <ContactLoadingScreen />
         ) : (
           <>
@@ -181,12 +196,15 @@ export function Sidebar({ contact, listContact, chatSwitching, onClose }: Sideba
                 contactLoading={contactLoading}
                 onUpdate={handleUpdate}
                 onToast={showToast}
+                onOpenReminder={onOpenReminder}
               />
             )}
             {activeTab === 'customers' && <CustomersPanel onToast={showToast} />}
             {activeTab === 'history' && <HistoryPanel />}
+            {activeTab === 'admin' && auth.isAdmin && <AdminPanel />}
             {activeTab === 'settings' && (
               <SettingsPanel
+                auth={auth}
                 onToast={showToast}
                 onThemeChange={(dark) => {
                   const el = document.getElementById('wa-lead-helper-sidebar');

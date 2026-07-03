@@ -24,7 +24,7 @@ export default defineManifest({
       '48': 'icons/icon48.png',
     },
   },
-  permissions: ['storage', 'notifications', 'alarms', 'windows'],
+  permissions: ['storage'],
   host_permissions: ['https://web.whatsapp.com/*'],
   background: {
     service_worker: 'src/background/index.ts',

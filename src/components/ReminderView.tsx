@@ -8,7 +8,6 @@ import type { ContactData, Reminder } from '@/types';
 import { formatDateTimeHe } from '@/utils/date';
 import { downloadIcs } from '@/utils/calendar';
 import { getContactLabel, getContactPhoneSubtitle } from '@/utils/contactDisplay';
-import { safeRuntimeSendMessage } from '@/utils/extensionContext';
 import { openChatForContact } from '@/utils/waDom';
 
 interface ReminderViewProps {
@@ -54,7 +53,6 @@ export function ReminderView({ reminderId, mode = 'overlay', onClose }: Reminder
 
   const handleComplete = async () => {
     if (!reminder) return;
-    await safeRuntimeSendMessage({ type: 'CANCEL_REMINDER', reminderId: reminder.id });
     await markReminderComplete(reminder.id);
     setCompleted(true);
   };

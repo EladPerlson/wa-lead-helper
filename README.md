@@ -83,7 +83,7 @@ vite.config.ts
 - Vite + @crxjs/vite-plugin
 - Chrome Manifest V3
 - chrome.storage.local
-- chrome.alarms + chrome.notifications
+- Supabase (הרשמה, התחברות וניהול משתמשים)
 
 ---
 

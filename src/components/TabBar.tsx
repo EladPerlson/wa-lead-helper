@@ -5,6 +5,7 @@ import { he } from '@/i18n/he';
 interface TabBarProps {
   activeTab: TabId;
   onTabChange: (tab: TabId) => void;
+  showAdmin?: boolean;
 }
 
 const tabs: { id: TabId; label: string; icon: string }[] = [
@@ -15,12 +16,15 @@ const tabs: { id: TabId; label: string; icon: string }[] = [
   { id: 'customers', label: he.tabs.customers, icon: '👥' },
   { id: 'history', label: he.tabs.history, icon: '📊' },
   { id: 'settings', label: he.tabs.settings, icon: '⚙️' },
+  { id: 'admin', label: he.tabs.admin, icon: '🛡️' },
 ];
 
-export function TabBar({ activeTab, onTabChange }: TabBarProps) {
+export function TabBar({ activeTab, onTabChange, showAdmin = false }: TabBarProps) {
+  const visibleTabs = tabs.filter((tab) => tab.id !== 'admin' || showAdmin);
+
   return (
     <div className="flex flex-wrap gap-1 p-2 bg-notion-surface border-b border-notion-border" dir="rtl">
-      {tabs.map((tab) => (
+      {visibleTabs.map((tab) => (
         <button
           key={tab.id}
           type="button"

@@ -5,14 +5,17 @@ import { Modal } from '@/components/Modal';
 import { Switch } from '@/components/Switch';
 import { clearAllData, exportData, importData } from '@/storage';
 import { PRIVACY_POLICY_URL } from '@/constants/urls';
-import { he } from '@/i18n/he';import { useSettings } from '@/hooks/useSettings';
+import { he } from '@/i18n/he';
+import { useSettings } from '@/hooks/useSettings';
+import type { AuthState } from '@/hooks/useAuth';
 
 interface SettingsPanelProps {
+  auth?: AuthState;
   onToast: (message: string, type?: 'success' | 'error' | 'info') => void;
   onThemeChange: (darkMode: boolean) => void;
 }
 
-export function SettingsPanel({ onToast, onThemeChange }: SettingsPanelProps) {
+export function SettingsPanel({ auth, onToast, onThemeChange }: SettingsPanelProps) {
   const { settings, updateSettings } = useSettings();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -64,6 +67,19 @@ export function SettingsPanel({ onToast, onThemeChange }: SettingsPanelProps) {
   return (
     <div className="p-4 space-y-4 animate-fade-in" dir="rtl">
       <h3 className="text-sm font-semibold text-notion-text text-right">{he.settings.title}</h3>
+
+      {auth?.session && (
+        <Card title={he.auth.account}>
+          <div className="space-y-2">
+            <p className="text-xs text-notion-muted text-right">
+              {he.auth.loggedInAs}: <span dir="ltr">{auth.session.user.email}</span>
+            </p>
+            <Button variant="secondary" size="sm" className="w-full" onClick={() => auth.signOut()}>
+              🚪 {he.auth.logout}
+            </Button>
+          </div>
+        </Card>
+      )}
 
       <Card>
         <Switch

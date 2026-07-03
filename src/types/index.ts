@@ -42,7 +42,7 @@ export interface StorageSchema {
   settings: Settings;
 }
 
-export type TabId = 'notes' | 'tags' | 'replies' | 'reminders' | 'history' | 'customers' | 'settings';
+export type TabId = 'notes' | 'tags' | 'replies' | 'reminders' | 'history' | 'customers' | 'settings' | 'admin';
 
 export interface DetectedContact {
   phoneNumber: string;
@@ -62,12 +62,6 @@ export interface ExportData {
 }
 
 export type MessageType =
-  | { type: 'SCHEDULE_REMINDER'; reminder: Reminder }
-  | { type: 'CANCEL_REMINDER'; reminderId: string }
-  | { type: 'RESCHEDULE_ALL_REMINDERS'; reminders: Reminder[] }
-  | { type: 'OPEN_REMINDER_POPUP'; reminderId: string }
-  | { type: 'SHOW_REMINDER_OVERLAY'; reminderId: string }
-  | { type: 'OPEN_WHATSAPP' }
   | { type: 'OPEN_CHAT'; phoneNumber: string; displayName?: string };
 
 export interface ToastMessage {
