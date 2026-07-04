@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { supabase, isSupabaseConfigured } from '@/supabase/client';
 import { ADMIN_EMAILS } from '@/supabase/config';
+import { PASSWORD_RESET_URL } from '@/constants/urls';
 
 export interface AuthState {
   session: Session | null;
@@ -10,6 +11,7 @@ export interface AuthState {
   configured: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signUp: (email: string, password: string) => Promise<{ error: string | null; needsEmailConfirm: boolean }>;
+  resetPassword: (email: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
 }
 
@@ -59,6 +61,14 @@ export function useAuth(): AuthState {
     return { error: null, needsEmailConfirm: !data.session };
   }, []);
 
+  const resetPassword = useCallback(async (email: string) => {
+    if (!supabase) return { error: 'Supabase not configured' };
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: PASSWORD_RESET_URL,
+    });
+    return { error: error ? error.message : null };
+  }, []);
+
   const signOut = useCallback(async () => {
     if (!supabase) return;
     await supabase.auth.signOut();
@@ -71,6 +81,7 @@ export function useAuth(): AuthState {
     configured: isSupabaseConfigured,
     signIn,
     signUp,
+    resetPassword,
     signOut,
   };
 }

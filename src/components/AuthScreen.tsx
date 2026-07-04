@@ -68,6 +68,27 @@ export function AuthScreen({ auth }: AuthScreenProps) {
     setInfo(null);
   };
 
+  const handleForgotPassword = async () => {
+    if (submitting) return;
+    setError(null);
+    setInfo(null);
+
+    const trimmed = email.trim();
+    if (!trimmed) {
+      setError(he.auth.enterEmailForReset);
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const { error: err } = await auth.resetPassword(trimmed);
+      if (err) setError(translateAuthError(err));
+      else setInfo(he.auth.resetEmailSent);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className="p-4 space-y-4 animate-fade-in" dir="rtl">
       <div className="text-center pt-6 pb-2">
@@ -118,6 +139,17 @@ export function AuthScreen({ auth }: AuthScreenProps) {
                 ? he.auth.loginButton
                 : he.auth.registerButton}
           </Button>
+
+          {mode === 'login' && (
+            <button
+              type="button"
+              onClick={handleForgotPassword}
+              disabled={submitting}
+              className="block w-full text-center text-xs text-notion-muted hover:text-notion-accent hover:underline disabled:opacity-50"
+            >
+              {he.auth.forgotPassword}
+            </button>
+          )}
         </form>
       </Card>
 

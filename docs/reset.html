@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>איפוס סיסמה - WA Lead Helper</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f7f7f5;
+        --surface: #ffffff;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --accent: #2563eb;
+        --accent-hover: #1d4ed8;
+        --border: #e5e7eb;
+        --error: #dc2626;
+        --success: #16a34a;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: 'Heebo', 'Assistant', Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 32px 28px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+        width: 100%;
+        max-width: 420px;
+        text-align: center;
+      }
+
+      .logo {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 700;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 22px;
+      }
+
+      p {
+        margin: 0 0 16px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      label {
+        display: block;
+        text-align: right;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 6px;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 14px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        margin-bottom: 14px;
+        direction: ltr;
+        text-align: left;
+        font-family: inherit;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+      }
+
+      button {
+        width: 100%;
+        padding: 11px;
+        font-size: 15px;
+        font-weight: 600;
+        color: #fff;
+        background: var(--accent);
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-family: inherit;
+        transition: background 0.2s;
+      }
+
+      button:hover {
+        background: var(--accent-hover);
+      }
+
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .msg {
+        font-size: 13px;
+        margin-top: 12px;
+        display: none;
+      }
+
+      .msg.error {
+        color: var(--error);
+        display: block;
+      }
+
+      .msg.success {
+        color: var(--success);
+        display: block;
+      }
+
+      #form-wrap,
+      #invalid-wrap {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="logo">WA</div>
+      <h1>איפוס סיסמה</h1>
+
+      <div id="loading-wrap">
+        <p>טוען...</p>
+      </div>
+
+      <div id="invalid-wrap">
+        <p>
+          הקישור אינו תקין או שפג תוקפו.<br />
+          חזור לתוסף ולחץ שוב על "שכחת סיסמה?" כדי לקבל קישור חדש.
+        </p>
+      </div>
+
+      <div id="form-wrap">
+        <p>הזן סיסמה חדשה לחשבון שלך</p>
+        <form id="reset-form">
+          <label for="password">סיסמה חדשה</label>
+          <input
+            id="password"
+            type="password"
+            minlength="6"
+            required
+            placeholder="לפחות 6 תווים"
+            autocomplete="new-password"
+          />
+          <label for="password2">אימות סיסמה</label>
+          <input
+            id="password2"
+            type="password"
+            minlength="6"
+            required
+            placeholder="הקלד שוב את הסיסמה"
+            autocomplete="new-password"
+          />
+          <button type="submit" id="submit-btn">עדכן סיסמה</button>
+        </form>
+        <div class="msg" id="msg"></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script>
+      const SUPABASE_URL = 'https://dxcwydqevucijdllyfxf.supabase.co';
+      const SUPABASE_ANON_KEY =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4Y3d5ZHFldnVjaWpkbGx5ZnhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwODIzMjEsImV4cCI6MjA5ODY1ODMyMX0.w_DDVHpRjDNov3svSqOIGBNZElb8jAjMG6TVVFbTvCA';
+
+      const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      const loadingWrap = document.getElementById('loading-wrap');
+      const invalidWrap = document.getElementById('invalid-wrap');
+      const formWrap = document.getElementById('form-wrap');
+      const msg = document.getElementById('msg');
+      const submitBtn = document.getElementById('submit-btn');
+
+      let hasSession = false;
+
+      function showForm() {
+        hasSession = true;
+        loadingWrap.style.display = 'none';
+        invalidWrap.style.display = 'none';
+        formWrap.style.display = 'block';
+      }
+
+      function showInvalid() {
+        if (hasSession) return;
+        loadingWrap.style.display = 'none';
+        formWrap.style.display = 'none';
+        invalidWrap.style.display = 'block';
+      }
+
+      client.auth.onAuthStateChange((event, session) => {
+        if (session) showForm();
+      });
+
+      // הקישור מהמייל מכיל טוקן ב-hash; נותנים לספרייה רגע לעבד אותו
+      setTimeout(async () => {
+        const { data } = await client.auth.getSession();
+        if (data.session) showForm();
+        else showInvalid();
+      }, 1200);
+
+      document.getElementById('reset-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        msg.className = 'msg';
+
+        const password = document.getElementById('password').value;
+        const password2 = document.getElementById('password2').value;
+
+        if (password !== password2) {
+          msg.textContent = 'הסיסמאות אינן תואמות';
+          msg.className = 'msg error';
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'מעדכן...';
+
+        const { error } = await client.auth.updateUser({ password });
+
+        if (error) {
+          msg.textContent =
+            error.message && error.message.includes('should be different')
+              ? 'הסיסמה החדשה חייבת להיות שונה מהקודמת'
+              : 'אירעה שגיאה בעדכון הסיסמה. נסה שוב.';
+          msg.className = 'msg error';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'עדכן סיסמה';
+          return;
+        }
+
+        msg.textContent = 'הסיסמה עודכנה בהצלחה! חזור ל-WhatsApp Web והתחבר עם הסיסמה החדשה.';
+        msg.className = 'msg success';
+        submitBtn.textContent = 'הסיסמה עודכנה ✓';
+      });
+    </script>
+  </body>
+</html>
