@@ -8,7 +8,8 @@ export const ADMIN_EMAILS = ['eladtvil@gmail.com'];
 
 // PayPal — https://developer.paypal.com/dashboard/applications
 // חשוב: ה-Client ID חייב להיות מאותו חשבון PayPal Business שבו נוצרו המסלולים.
-export const PAYPAL_CLIENT_ID = 'Aefglr47qDDdJYbqXwDyddCtkICbf67GI_T9KX52BAdsdXeLv2ifni4fKlpLxpeWtvQYn8JIWUmZEZWx';
+export const PAYPAL_CLIENT_ID =
+  'AbnyYBk1O8qV-D0P2yYu9_LQDh5QopccdOvIYoBv1SPIZWNgbLHXG55pEQosOJzXLlbCUJ5VCMAscYN3';
 
 /** live = paypal.com | sandbox = sandbox.paypal.com (לבדיקות בלבד) */
 export const PAYPAL_MODE: 'live' | 'sandbox' = 'live';
