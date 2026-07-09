@@ -289,11 +289,15 @@
       const PAYPAL_CLIENT_ID =
         'Aefglr47qDDdJYbqXwDyddCtkICbf67GI_T9KX52BAdsdXeLv2ifni4fKlpLxpeWtvQYn8JIWUmZEZWx';
 
-      const pageParams = new URLSearchParams(window.location.search);
+      const PAYPAL_MODE = 'live';
+      const PAYPAL_SDK_BASE =
+        PAYPAL_MODE === 'sandbox'
+          ? 'https://www.sandbox.paypal.com/sdk/js'
+          : 'https://www.paypal.com/sdk/js';
 
       const PAYPAL_PLAN_IDS = {
-        pro: pageParams.get('pro_plan') || 'P-5S302684SK139443NNJH645I',
-        unlimited: pageParams.get('unlimited_plan') || 'P-5NP7360783546560KNJH65MA',
+        pro: 'P-5S302684SK139443NNJH645I',
+        unlimited: 'P-5NP7360783546560KNJH65MA',
       };
 
       const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -347,9 +351,10 @@
         paypalSdkPromise = new Promise((resolve, reject) => {
           const script = document.createElement('script');
           script.src =
-            'https://www.paypal.com/sdk/js?client-id=' +
+            PAYPAL_SDK_BASE +
+            '?client-id=' +
             encodeURIComponent(PAYPAL_CLIENT_ID) +
-            '&vault=true&intent=subscription&currency=ILS&components=buttons&locale=he_IL';
+            '&vault=true&intent=subscription&components=buttons&locale=he_IL';
           script.async = true;
           script.onload = () => {
             if (window.paypal) resolve(window.paypal);
@@ -371,7 +376,7 @@
         const raw = err && typeof err === 'object' && err.message ? String(err.message) : '';
         if (raw.includes('RESOURCE_NOT_FOUND') || raw.includes('INVALID_RESOURCE_ID')) {
           showPaymentMsg(
-            'מזהה המסלול ב-PayPal לא נמצא. ב-PayPal Dashboard → Subscriptions → Plans העתק את Plan ID של כל מסלול (חייב להיות Active וב-Live) ועדכן בקוד.',
+            'PayPal לא מוצא את המסלול. ודא ש: (1) המסלול Active, (2) ה-Client ID בקוד שייך לאותו חשבון PayPal Business שיצר את המסלולים, (3) Live מול Sandbox תואמים.',
             'error',
           );
           return;
@@ -403,7 +408,7 @@
 
           await paypalApi
             .Buttons({
-              style: { shape: 'rect', color: 'gold', layout: 'vertical', label: 'subscribe' },
+              style: { shape: 'rect', color: 'silver', layout: 'vertical', label: 'subscribe' },
               createSubscription: function (_data, actions) {
                 return actions.subscription.create(subscriptionOptions(PAYPAL_PLAN_IDS.pro));
               },
@@ -428,7 +433,7 @@
 
           await paypalApi
             .Buttons({
-              style: { shape: 'rect', color: 'gold', layout: 'vertical', label: 'subscribe' },
+              style: { shape: 'rect', color: 'silver', layout: 'vertical', label: 'subscribe' },
               createSubscription: function (_data, actions) {
                 return actions.subscription.create(subscriptionOptions(PAYPAL_PLAN_IDS.unlimited));
               },

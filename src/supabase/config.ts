@@ -6,13 +6,23 @@ export const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 // כתובות מייל שמוגדרות כאדמין — רק הן רואות את דף האדמין
 export const ADMIN_EMAILS = ['eladtvil@gmail.com'];
 
-// PayPal — מלא אחרי יצירת אפליקציה ומסלולי מנוי ב-PayPal Developer Dashboard
-// https://developer.paypal.com/dashboard/applications
+// PayPal — https://developer.paypal.com/dashboard/applications
+// חשוב: ה-Client ID חייב להיות מאותו חשבון PayPal Business שבו נוצרו המסלולים.
 export const PAYPAL_CLIENT_ID = 'Aefglr47qDDdJYbqXwDyddCtkICbf67GI_T9KX52BAdsdXeLv2ifni4fKlpLxpeWtvQYn8JIWUmZEZWx';
 
-/** מזהי מסלולי מנוי חודשיים ב-PayPal (Subscriptions → Plans) */
+/** live = paypal.com | sandbox = sandbox.paypal.com (לבדיקות בלבד) */
+export const PAYPAL_MODE: 'live' | 'sandbox' = 'live';
+
+export const PAYPAL_SDK_BASE =
+  PAYPAL_MODE === 'sandbox'
+    ? 'https://www.sandbox.paypal.com/sdk/js'
+    : 'https://www.paypal.com/sdk/js';
+
+/** מזהי מסלולי מנוי חודשיים ב-PayPal (Subscriptions → Plans, מצב Active) */
 export const PAYPAL_PLAN_IDS = {
+  /** BASIC — ₪29/חודש */
   pro: 'P-5S302684SK139443NNJH645I',
+  /** UNLIMITED — ₪99/חודש */
   unlimited: 'P-5NP7360783546560KNJH65MA',
 } as const;
 

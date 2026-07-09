@@ -58,5 +58,9 @@ https://eladperlson.github.io/wa-lead-helper/pricing.html?pro_plan=P-XXX&unlimit
 
 | מסלול | Plan ID |
 |--------|---------|
-| בסיסי ₪29 | `P-5S302684SK139443NNJH645I` |
-| ללא הגבלה ₪99 | `P-5NP7360783546560KNJH65MA` |
+| BASIC ₪29 | `P-5S302684SK139443NNJH645I` |
+| UNLIMITED ₪99 | `P-5NP7360783546560KNJH65MA` |
+
+**Client ID** (Live): `AbnyYBk1O8qV-D0P2yYu9_LQDh5QopccdOvIYoBv1SPIZWNgbLHXG55pEQosOJzXLlbCUJ5VCMAscYN3`
+
+חשוב: ה-Client ID חייב להיות מאותה אפליקציה ב-PayPal שממנה הועתקו כפתורי המנוי.
