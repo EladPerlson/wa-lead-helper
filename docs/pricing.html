@@ -202,27 +202,6 @@
         min-height: 42px;
       }
 
-      .paypal-fallback {
-        display: block;
-        width: 100%;
-        margin-top: 8px;
-        padding: 10px;
-        text-align: center;
-        font-size: 13px;
-        font-weight: 600;
-        color: #fff;
-        background: #ffc439;
-        border: none;
-        border-radius: 12px;
-        cursor: pointer;
-        font-family: inherit;
-        text-decoration: none;
-      }
-
-      .paypal-fallback:hover {
-        background: #f0b429;
-      }
-
       .badge-free {
         display: inline-block;
         background: #e5e7eb;
@@ -310,9 +289,11 @@
       const PAYPAL_CLIENT_ID =
         'Aefglr47qDDdJYbqXwDyddCtkICbf67GI_T9KX52BAdsdXeLv2ifni4fKlpLxpeWtvQYn8JIWUmZEZWx';
 
+      const pageParams = new URLSearchParams(window.location.search);
+
       const PAYPAL_PLAN_IDS = {
-        pro: 'P-5S302684SK139443NNJH645I',
-        unlimited: 'P-5NP7360783546560KNJH65MA',
+        pro: pageParams.get('pro_plan') || 'P-5S302684SK139443NNJH645I',
+        unlimited: pageParams.get('unlimited_plan') || 'P-5NP7360783546560KNJH65MA',
       };
 
       const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -327,6 +308,7 @@
 
       let session = null;
       let paypalRendered = false;
+      let paypalRendering = false;
       let paypalSdkPromise = null;
 
       function showAuthMsg(text, type) {
@@ -381,76 +363,44 @@
       }
 
       function subscriptionOptions(planId) {
-        return {
-          plan_id: planId,
-          application_context: {
-            brand_name: 'WA Lead Helper',
-            locale: 'he-IL',
-            shipping_preference: 'NO_SHIPPING',
-            user_action: 'SUBSCRIBE_NOW',
-          },
-        };
+        return { plan_id: planId };
       }
 
-      function addFallbackLink(containerId, planId, label) {
-        const container = document.getElementById(containerId);
-        if (!container || container.querySelector('.paypal-fallback')) return;
-        const link = document.createElement('a');
-        link.className = 'paypal-fallback';
-        link.href =
-          'https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=' +
-          encodeURIComponent(planId);
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        link.textContent = label;
-        container.appendChild(link);
-      }
-
-      function handlePayPalError(err, planLabel) {
-        console.error('PayPal error (' + planLabel + '):', err);
-        const detail = err && typeof err === 'object' && err.message ? err.message : '';
+      function handlePayPalError(err) {
+        console.error('PayPal error:', err);
+        const raw = err && typeof err === 'object' && err.message ? String(err.message) : '';
+        if (raw.includes('RESOURCE_NOT_FOUND') || raw.includes('INVALID_RESOURCE_ID')) {
+          showPaymentMsg(
+            'מזהה המסלול ב-PayPal לא נמצא. ב-PayPal Dashboard → Subscriptions → Plans העתק את Plan ID של כל מסלול (חייב להיות Active וב-Live) ועדכן בקוד.',
+            'error',
+          );
+          return;
+        }
         showPaymentMsg(
-          'שגיאה בפתיחת חלון התשלום של PayPal' +
-            (detail ? ': ' + detail : '') +
-            '. נסה את הקישור הצהוב מתחת לכפתור, או נסה שוב בדפדפן אחר.',
+          'שגיאה בפתיחת חלון התשלום של PayPal. נסה שוב או פנה לתמיכה.',
           'error',
         );
       }
 
       async function renderPayPalButtons() {
-        if (!session || paypalRendered) return;
+        if (!session || paypalRendered || paypalRendering) return;
+        paypalRendering = true;
 
         const proSlot = document.getElementById('paypal-pro');
         const unlimitedSlot = document.getElementById('paypal-unlimited');
         proSlot.innerHTML = '';
         unlimitedSlot.innerHTML = '';
 
-        let paypalApi;
         try {
-          paypalApi = await loadPayPalSdk();
-        } catch (err) {
-          handlePayPalError(err, 'SDK');
-          addFallbackLink('paypal-pro', PAYPAL_PLAN_IDS.pro, 'תשלום ב-PayPal (מסלול בסיסי)');
-          addFallbackLink(
-            'paypal-unlimited',
-            PAYPAL_PLAN_IDS.unlimited,
-            'תשלום ב-PayPal (ללא הגבלה)',
-          );
-          return;
-        }
+          const paypalApi = await loadPayPalSdk();
 
-        paypalRendered = true;
+          const commonHandlers = {
+            onCancel: function () {
+              showPaymentMsg('התשלום בוטל. אפשר לנסות שוב בכל עת.', '');
+            },
+            onError: handlePayPalError,
+          };
 
-        const commonHandlers = {
-          onCancel: function () {
-            showPaymentMsg('התשלום בוטל. אפשר לנסות שוב בכל עת.', '');
-          },
-          onError: function (err) {
-            handlePayPalError(err, 'button');
-          },
-        };
-
-        try {
           await paypalApi
             .Buttons({
               style: { shape: 'rect', color: 'gold', layout: 'vertical', label: 'subscribe' },
@@ -475,12 +425,7 @@
               ...commonHandlers,
             })
             .render('#paypal-pro');
-        } catch (err) {
-          handlePayPalError(err, 'pro');
-          addFallbackLink('paypal-pro', PAYPAL_PLAN_IDS.pro, 'תשלום ב-PayPal (מסלול בסיסי)');
-        }
 
-        try {
           await paypalApi
             .Buttons({
               style: { shape: 'rect', color: 'gold', layout: 'vertical', label: 'subscribe' },
@@ -505,26 +450,18 @@
               ...commonHandlers,
             })
             .render('#paypal-unlimited');
-        } catch (err) {
-          handlePayPalError(err, 'unlimited');
-          addFallbackLink(
-            'paypal-unlimited',
-            PAYPAL_PLAN_IDS.unlimited,
-            'תשלום ב-PayPal (ללא הגבלה)',
-          );
-        }
 
-        addFallbackLink('paypal-pro', PAYPAL_PLAN_IDS.pro, 'או לחץ כאן לתשלום בדף PayPal');
-        addFallbackLink(
-          'paypal-unlimited',
-          PAYPAL_PLAN_IDS.unlimited,
-          'או לחץ כאן לתשלום בדף PayPal',
-        );
+          paypalRendered = true;
+        } catch (err) {
+          handlePayPalError(err);
+        } finally {
+          paypalRendering = false;
+        }
       }
 
       function clearPayPalButtons() {
         paypalRendered = false;
-        paypalSdkPromise = null;
+        paypalRendering = false;
         document.getElementById('paypal-pro').innerHTML = '';
         document.getElementById('paypal-unlimited').innerHTML = '';
       }
@@ -536,7 +473,8 @@
         if (session) await renderPayPalButtons();
       }
 
-      client.auth.onAuthStateChange(async (_event, newSession) => {
+      client.auth.onAuthStateChange(async (event, newSession) => {
+        if (event === 'INITIAL_SESSION') return;
         session = newSession;
         setLoggedInUI(Boolean(session));
         if (session && !paypalRendered) await renderPayPalButtons();

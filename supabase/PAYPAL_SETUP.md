@@ -17,13 +17,37 @@
 - מזהי המסלולים (`P-5S30...`, `P-5NP7...`) חייבים להיות ממסלולי **Live**
 - אם יצרת מסלולים ב-Sandbox, צריך Client ID של Sandbox ומזהי מסלול אחרים
 
+## שגיאת RESOURCE_NOT_FOUND / INVALID_RESOURCE_ID
+
+המזהים בקוד לא תואמים למסלולים ב-PayPal Live שלך.
+
+### איך למצוא את Plan ID הנכון
+
+1. היכנס ל-[PayPal.com](https://www.paypal.com) (לא Sandbox)
+2. **Settings** → **Account Settings** → **Products and Services** → **Subscriptions**
+   (או: PayPal Dashboard → Billing → Subscriptions → Plans)
+3. לחץ על המסלול (₪29 או ₪99)
+4. העתק את **Plan ID** (מתחיל ב-`P-`)
+5. עדכן ב-`src/supabase/config.ts` וב-`docs/pricing.html`:
+
+```ts
+export const PAYPAL_PLAN_IDS = {
+  pro: 'P-XXXXXXXX',      // מסלול ₪29
+  unlimited: 'P-YYYYYYYY', // מסלול ₪99
+};
+```
+
+### בדיקה מהירה בלי לפרוס קוד
+
+פתח בדפדפן (אחרי התחברות בדף התשלום):
+
+```
+https://eladperlson.github.io/wa-lead-helper/pricing.html?pro_plan=P-XXX&unlimited_plan=P-YYY
+```
+
 ## 3. אם הכפתור עדיין נכשל
 
-בדף התשלום יש קישור צהוב **"או לחץ כאן לתשלום בדף PayPal"** — הוא פותח את התשלום ישירות באתר PayPal (ללא popup).
-
-לאחר תשלום מוצלח בקישור הישיר, עדכן מסלול ידנית בדף האדמין או ודא ש-`activate_plan` רץ ב-Supabase.
-
-## 4. בדיקת שגיאה בדפדפן
+## 3. פתרון נוסף
 
 1. פתח את דף התשלום
 2. לחץ F12 → **Console**
