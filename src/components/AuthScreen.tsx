@@ -9,6 +9,8 @@ interface AuthScreenProps {
   auth: AuthState;
 }
 
+type AuthMode = 'login' | 'register' | 'forgot';
+
 function translateAuthError(message: string): string {
   const lower = message.toLowerCase();
   if (lower.includes('invalid login credentials')) return he.auth.invalidCredentials;
@@ -19,8 +21,14 @@ function translateAuthError(message: string): string {
   return he.auth.genericError;
 }
 
+function getTitle(mode: AuthMode): string {
+  if (mode === 'login') return he.auth.loginTitle;
+  if (mode === 'register') return he.auth.registerTitle;
+  return he.auth.forgotPasswordTitle;
+}
+
 export function AuthScreen({ auth }: AuthScreenProps) {
-  const [mode, setMode] = useState<'login' | 'register'>('login');
+  const [mode, setMode] = useState<AuthMode>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -37,57 +45,61 @@ export function AuthScreen({ auth }: AuthScreenProps) {
     );
   }
 
+  const clearMessages = () => {
+    setError(null);
+    setInfo(null);
+  };
+
+  const switchMode = (next: AuthMode) => {
+    setMode(next);
+    clearMessages();
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (submitting) return;
-    setError(null);
-    setInfo(null);
+    clearMessages();
     setSubmitting(true);
 
     try {
       if (mode === 'login') {
         const { error: err } = await auth.signIn(email.trim(), password);
         if (err) setError(translateAuthError(err));
-      } else {
+      } else if (mode === 'register') {
         const { error: err, needsEmailConfirm } = await auth.signUp(email.trim(), password);
         if (err) {
           setError(translateAuthError(err));
         } else if (needsEmailConfirm) {
           setInfo(he.auth.confirmEmailSent);
-          setMode('login');
+          switchMode('login');
         }
+      } else {
+        const trimmed = email.trim();
+        if (!trimmed) {
+          setError(he.auth.enterEmailForReset);
+          return;
+        }
+        const { error: err } = await auth.resetPassword(trimmed);
+        if (err) setError(translateAuthError(err));
+        else setInfo(he.auth.resetEmailSent);
       }
     } finally {
       setSubmitting(false);
     }
   };
 
-  const switchMode = () => {
-    setMode((prev) => (prev === 'login' ? 'register' : 'login'));
-    setError(null);
-    setInfo(null);
-  };
-
-  const handleForgotPassword = async () => {
-    if (submitting) return;
-    setError(null);
-    setInfo(null);
-
-    const trimmed = email.trim();
-    if (!trimmed) {
-      setError(he.auth.enterEmailForReset);
-      return;
-    }
-
-    setSubmitting(true);
-    try {
-      const { error: err } = await auth.resetPassword(trimmed);
-      if (err) setError(translateAuthError(err));
-      else setInfo(he.auth.resetEmailSent);
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const submitLabel =
+    mode === 'login'
+      ? submitting
+        ? he.auth.loggingIn
+        : he.auth.loginButton
+      : mode === 'register'
+        ? submitting
+          ? he.auth.registering
+          : he.auth.registerButton
+        : submitting
+          ? he.auth.sendingResetLink
+          : he.auth.sendResetLink;
 
   return (
     <div className="p-4 space-y-4 animate-fade-in" dir="rtl">
@@ -95,10 +107,10 @@ export function AuthScreen({ auth }: AuthScreenProps) {
         <div className="w-14 h-14 mx-auto rounded-2xl bg-notion-accent text-white flex items-center justify-center font-bold text-lg mb-3">
           WA
         </div>
-        <h2 className="text-lg font-bold text-notion-text">
-          {mode === 'login' ? he.auth.loginTitle : he.auth.registerTitle}
-        </h2>
-        <p className="text-xs text-notion-muted mt-1">{he.auth.loginRequired}</p>
+        <h2 className="text-lg font-bold text-notion-text">{getTitle(mode)}</h2>
+        <p className="text-xs text-notion-muted mt-1">
+          {mode === 'forgot' ? he.auth.forgotPasswordHint : he.auth.loginRequired}
+        </p>
       </div>
 
       <Card>
@@ -114,36 +126,33 @@ export function AuthScreen({ auth }: AuthScreenProps) {
             dir="ltr"
             className="text-left"
           />
-          <Input
-            label={he.auth.password}
-            type="password"
-            autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-            placeholder={he.auth.passwordPlaceholder}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            minLength={6}
-            dir="ltr"
-            className="text-left"
-          />
+
+          {mode !== 'forgot' && (
+            <Input
+              label={he.auth.password}
+              type="password"
+              autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+              placeholder={he.auth.passwordPlaceholder}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
+              dir="ltr"
+              className="text-left"
+            />
+          )}
 
           {error && <p className="text-xs text-red-500 text-right">{error}</p>}
           {info && <p className="text-xs text-green-600 text-right">{info}</p>}
 
           <Button type="submit" className="w-full" disabled={submitting}>
-            {submitting
-              ? mode === 'login'
-                ? he.auth.loggingIn
-                : he.auth.registering
-              : mode === 'login'
-                ? he.auth.loginButton
-                : he.auth.registerButton}
+            {submitLabel}
           </Button>
 
           {mode === 'login' && (
             <button
               type="button"
-              onClick={handleForgotPassword}
+              onClick={() => switchMode('forgot')}
               disabled={submitting}
               className="block w-full text-center text-xs text-notion-muted hover:text-notion-accent hover:underline disabled:opacity-50"
             >
@@ -153,13 +162,23 @@ export function AuthScreen({ auth }: AuthScreenProps) {
         </form>
       </Card>
 
-      <button
-        type="button"
-        onClick={switchMode}
-        className="block w-full text-center text-xs text-notion-accent hover:underline"
-      >
-        {mode === 'login' ? he.auth.switchToRegister : he.auth.switchToLogin}
-      </button>
+      {mode === 'forgot' ? (
+        <button
+          type="button"
+          onClick={() => switchMode('login')}
+          className="block w-full text-center text-xs text-notion-accent hover:underline"
+        >
+          {he.auth.backToLogin}
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={() => switchMode(mode === 'login' ? 'register' : 'login')}
+          className="block w-full text-center text-xs text-notion-accent hover:underline"
+        >
+          {mode === 'login' ? he.auth.switchToRegister : he.auth.switchToLogin}
+        </button>
+      )}
     </div>
   );
 }
