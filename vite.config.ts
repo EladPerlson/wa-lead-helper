@@ -7,15 +7,9 @@ import { resolve } from 'path';
 export default defineConfig({
   plugins: [react(), crx({ manifest })],
   resolve: {
+    preserveSymlinks: true,
     alias: {
       '@': resolve(__dirname, 'src'),
-    },
-  },
-  build: {
-    rollupOptions: {
-      input: {
-        reminder: resolve(__dirname, 'reminder.html'),
-      },
     },
   },
 });

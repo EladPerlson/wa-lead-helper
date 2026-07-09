@@ -256,7 +256,7 @@
 
         <div class="plan-card featured" id="plan-pro-card">
           <h2>בסיסי</h2>
-          <div class="price">$10 <span>/ חודש</span></div>
+          <div class="price">₪29 <span>/ חודש</span></div>
           <ul class="features">
             <li>עד 12 תיוגי לקוחות</li>
             <li>6 התראות ביום</li>
@@ -267,7 +267,7 @@
 
         <div class="plan-card" id="plan-unlimited-card">
           <h2>ללא הגבלה</h2>
-          <div class="price">$39 <span>/ חודש</span></div>
+          <div class="price">₪99 <span>/ חודש</span></div>
           <ul class="features">
             <li>תיוגי לקוחות ללא הגבלה</li>
             <li>התראות ללא הגבלה</li>
@@ -283,7 +283,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
     <script
       id="paypal-sdk"
-      src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&vault=true&intent=subscription"
+      src="https://www.paypal.com/sdk/js?client-id=Aefglr47qDDdJYbqXwDyddCtkICbf67GI_T9KX52BAdsdXeLv2ifni4fKlpLxpeWtvQYn8JIWUmZEZWx&vault=true&intent=subscription"
       data-sdk-integration-source="button-factory"
     ></script>
     <script>
@@ -292,8 +292,8 @@
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4Y3d5ZHFldnVjaWpkbGx5ZnhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwODIzMjEsImV4cCI6MjA5ODY1ODMyMX0.w_DDVHpRjDNov3svSqOIGBNZElb8jAjMG6TVVFbTvCA';
 
       const PAYPAL_PLAN_IDS = {
-        pro: 'P-PRO-PLAN-ID',
-        unlimited: 'P-UNLIMITED-PLAN-ID',
+        pro: 'P-5S302684SK139443NNJH645I',
+        unlimited: 'P-5NP7360783546560KNJH65MA',
       };
 
       const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -339,14 +339,7 @@
       }
 
       function renderPayPalButtons() {
-        if (paypalRendered || !session || typeof paypal === 'undefined') return;
-        if (PAYPAL_PLAN_IDS.pro === 'P-PRO-PLAN-ID') {
-          showPaymentMsg(
-            'יש להגדיר מזהי מסלול PayPal בקובץ pricing.html וב-src/supabase/config.ts',
-            'error',
-          );
-          return;
-        }
+        if (!session || typeof paypal === 'undefined') return;
 
         paypalRendered = true;
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
-import { PLANS, formatLimit } from '@/plans';
+import { PLANS, formatLimit, formatPlanPrice } from '@/plans';
 import type { PlanId } from '@/plans';
 import { PRICING_URL } from '@/constants/urls';
 import { he } from '@/i18n/he';
@@ -38,9 +38,9 @@ export function PricingPanel({ subscription, userEmail }: PricingPanelProps) {
         <div className="space-y-2 text-sm text-right">
           <p className="font-semibold text-notion-text">
             {PLANS[plan].name}
-            {PLANS[plan].priceUsd > 0 && (
+            {PLANS[plan].priceNis > 0 && (
               <span className="text-notion-muted font-normal mr-1">
-                (${PLANS[plan].priceUsd}/חודש)
+                ({formatPlanPrice(PLANS[plan].priceNis)}/{he.pricing.perMonth})
               </span>
             )}
           </p>
@@ -72,7 +72,7 @@ export function PricingPanel({ subscription, userEmail }: PricingPanelProps) {
                   <div className="text-right flex-1 min-w-0">
                     <p className="text-sm font-medium text-notion-text">{PLANS[id].name}</p>
                     <p className="text-xs text-notion-muted">
-                      ${PLANS[id].priceUsd}/{he.pricing.perMonth} ·{' '}
+                      {formatPlanPrice(PLANS[id].priceNis)}/{he.pricing.perMonth} ·{' '}
                       {formatLimit(PLANS[id].limits.taggedCustomers)} {he.pricing.tagsLabel} ·{' '}
                       {formatLimit(PLANS[id].limits.remindersPerDay)} {he.pricing.remindersLabel} ·{' '}
                       {formatLimit(PLANS[id].limits.templates)} {he.pricing.repliesLabel}

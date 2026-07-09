@@ -9,7 +9,7 @@ export interface PlanLimits {
 export interface PlanInfo {
   id: PlanId;
   name: string;
-  priceUsd: number;
+  priceNis: number;
   limits: PlanLimits;
 }
 
@@ -17,7 +17,7 @@ export const PLANS: Record<PlanId, PlanInfo> = {
   free: {
     id: 'free',
     name: 'חינמי',
-    priceUsd: 0,
+    priceNis: 0,
     limits: {
       taggedCustomers: 3,
       remindersPerDay: 1,
@@ -27,7 +27,7 @@ export const PLANS: Record<PlanId, PlanInfo> = {
   pro: {
     id: 'pro',
     name: 'בסיסי',
-    priceUsd: 10,
+    priceNis: 29,
     limits: {
       taggedCustomers: 12,
       remindersPerDay: 6,
@@ -37,7 +37,7 @@ export const PLANS: Record<PlanId, PlanInfo> = {
   unlimited: {
     id: 'unlimited',
     name: 'ללא הגבלה',
-    priceUsd: 39,
+    priceNis: 99,
     limits: {
       taggedCustomers: Infinity,
       remindersPerDay: Infinity,
@@ -56,6 +56,10 @@ export function isUnlimited(value: number): boolean {
 
 export function formatLimit(value: number): string {
   return isUnlimited(value) ? 'ללא הגבלה' : String(value);
+}
+
+export function formatPlanPrice(priceNis: number): string {
+  return priceNis === 0 ? 'חינמי' : `₪${priceNis}`;
 }
 
 export function normalizePlanId(value: string | null | undefined): PlanId {
