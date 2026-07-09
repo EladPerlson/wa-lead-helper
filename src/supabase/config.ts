@@ -11,13 +11,8 @@ export const ADMIN_EMAILS = ['eladtvil@gmail.com'];
 export const PAYPAL_CLIENT_ID =
   'AbnyYBk1O8qV-D0P2yYu9_LQDh5QopccdOvIYoBv1SPIZWNgbLHXG55pEQosOJzXLlbCUJ5VCMAscYN3';
 
-/** live = paypal.com | sandbox = sandbox.paypal.com (לבדיקות בלבד) */
-export const PAYPAL_MODE: 'live' | 'sandbox' = 'live';
-
-export const PAYPAL_SDK_BASE =
-  PAYPAL_MODE === 'sandbox'
-    ? 'https://www.sandbox.paypal.com/sdk/js'
-    : 'https://www.paypal.com/sdk/js';
+/** כתובת SDK של PayPal (Live). לבדיקות Sandbox שנה ל-sandbox.paypal.com */
+export const PAYPAL_SDK_BASE = 'https://www.paypal.com/sdk/js';
 
 /** מזהי מסלולי מנוי חודשיים ב-PayPal (Subscriptions → Plans, מצב Active) */
 export const PAYPAL_PLAN_IDS = {
