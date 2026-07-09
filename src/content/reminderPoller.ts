@@ -1,18 +1,31 @@
-import { getAllReminders } from '@/storage';
+import { getPlanLimits, normalizePlanId } from '@/plans';
+import { getAllReminders, getStorageItem } from '@/storage';
+import { canShowReminderNotification, recordReminderNotification } from '@/utils/limits';
 import { isReminderDue } from '@/utils/date';
 import { handleChromeError } from '@/utils/extensionContext';
 
 const POLL_INTERVAL_MS = 30_000;
+
+async function getCachedLimits() {
+  const settings = (await getStorageItem('settings')) ?? { darkMode: false };
+  const plan = normalizePlanId(settings.cachedPlan);
+  return getPlanLimits(plan);
+}
 
 export function startReminderPoller(onDue: (reminderId: string) => void): () => void {
   const shownIds = new Set<string>();
 
   const check = async () => {
     try {
+      const limits = await getCachedLimits();
       const reminders = await getAllReminders();
       for (const reminder of reminders) {
         if (isReminderDue(reminder) && !shownIds.has(reminder.id)) {
+          if (!(await canShowReminderNotification(limits))) {
+            continue;
+          }
           shownIds.add(reminder.id);
+          await recordReminderNotification();
           onDue(reminder.id);
         }
       }
@@ -32,7 +45,7 @@ export function startReminderPoller(onDue: (reminderId: string) => void): () => 
     area: string,
   ) => {
     if (area !== 'local') return;
-    if (changes.contacts) void check();
+    if (changes.contacts || changes.settings) void check();
   };
 
   try {

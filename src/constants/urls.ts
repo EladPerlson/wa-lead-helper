@@ -5,3 +5,6 @@ export const PRIVACY_POLICY_URL =
 /** Password reset landing page (GitHub Pages). Must be allowed in Supabase Redirect URLs. */
 export const PASSWORD_RESET_URL =
   'https://eladperlson.github.io/wa-lead-helper/reset.html';
+
+/** Pricing & PayPal checkout page (GitHub Pages). */
+export const PRICING_URL = 'https://eladperlson.github.io/wa-lead-helper/pricing.html';

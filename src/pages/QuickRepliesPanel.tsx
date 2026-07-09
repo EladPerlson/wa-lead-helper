@@ -9,13 +9,18 @@ import type { ContactData } from '@/types';
 import { generateId } from '@/utils/id';
 import { injectTextToWhatsApp } from '@/utils/waDom';
 
+import type { PlanLimits } from '@/plans';
+import { canAddTemplate } from '@/utils/limits';
+import { isUnlimited } from '@/plans';
+
 interface QuickRepliesPanelProps {
   contact: ContactData | null;
+  limits: PlanLimits;
   onUpdate: (updates: Partial<Omit<ContactData, 'phoneNumber'>>) => Promise<ContactData | null>;
   onToast: (message: string, type?: 'success' | 'error' | 'info') => void;
 }
 
-export function QuickRepliesPanel({ contact, onUpdate, onToast }: QuickRepliesPanelProps) {
+export function QuickRepliesPanel({ contact, limits, onUpdate, onToast }: QuickRepliesPanelProps) {
   const { templates, addTemplate, removeTemplate } = useTemplates();
   const [search, setSearch] = useState('');
   const [newText, setNewText] = useState('');
@@ -41,6 +46,10 @@ export function QuickRepliesPanel({ contact, onUpdate, onToast }: QuickRepliesPa
 
   const handleAdd = async () => {
     if (!newText.trim()) return;
+    if (!(await canAddTemplate(limits, templates.length))) {
+      onToast(he.replies.limitReached, 'error');
+      return;
+    }
     await addTemplate({
       id: generateId('tpl'),
       text: newText.trim(),
@@ -93,7 +102,12 @@ export function QuickRepliesPanel({ contact, onUpdate, onToast }: QuickRepliesPa
       </div>
 
       {!showAdd ? (
-        <Button variant="secondary" size="sm" onClick={() => setShowAdd(true)}>
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => setShowAdd(true)}
+          disabled={!isUnlimited(limits.templates) && templates.length >= limits.templates}
+        >
           + {he.replies.add}
         </Button>
       ) : (

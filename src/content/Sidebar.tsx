@@ -24,6 +24,7 @@ import { isContactDataReady } from '@/components/ContactPanelGate';
 import { ContactLoadingScreen } from '@/components/ContactLoadingScreen';
 import { AuthScreen } from '@/components/AuthScreen';
 import { useAuth } from '@/hooks/useAuth';
+import { useSubscription } from '@/hooks/useSubscription';
 
 const CONTACT_TABS: TabId[] = ['notes', 'tags', 'replies', 'reminders'];
 interface SidebarProps {
@@ -38,6 +39,7 @@ export function Sidebar({ contact, listContact, chatSwitching, onClose, onOpenRe
   const [activeTab, setActiveTab] = useState<TabId>('notes');
   const { settings } = useSettings();
   const auth = useAuth();
+  const subscription = useSubscription(auth.session);
 
   const targetContact =
     listContact && contact && !contactsReferToSamePerson(listContact, contact)
@@ -176,6 +178,7 @@ export function Sidebar({ contact, listContact, chatSwitching, onClose, onOpenRe
                 contact={contactData}
                 detectedContact={targetContact}
                 contactLoading={contactLoading}
+                limits={subscription.limits}
                 onUpdate={handleUpdate}
                 onToast={showToast}
               />
@@ -184,6 +187,7 @@ export function Sidebar({ contact, listContact, chatSwitching, onClose, onOpenRe
               <QuickRepliesPanel
                 key={panelKey}
                 contact={contactData}
+                limits={subscription.limits}
                 onUpdate={handleUpdate}
                 onToast={showToast}
               />
@@ -194,6 +198,7 @@ export function Sidebar({ contact, listContact, chatSwitching, onClose, onOpenRe
                 contact={contactData}
                 detectedContact={targetContact}
                 contactLoading={contactLoading}
+                limits={subscription.limits}
                 onUpdate={handleUpdate}
                 onToast={showToast}
                 onOpenReminder={onOpenReminder}
@@ -205,6 +210,7 @@ export function Sidebar({ contact, listContact, chatSwitching, onClose, onOpenRe
             {activeTab === 'settings' && (
               <SettingsPanel
                 auth={auth}
+                subscription={subscription}
                 onToast={showToast}
                 onThemeChange={(dark) => {
                   const el = document.getElementById('wa-lead-helper-sidebar');

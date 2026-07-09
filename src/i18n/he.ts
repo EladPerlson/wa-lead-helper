@@ -53,10 +53,40 @@ export const he = {
     usersCount: 'סה"כ משתמשים',
     email: 'מייל',
     registeredAt: 'תאריך הרשמה',
+    plan: 'מסלול',
     empty: 'אין משתמשים רשומים',
     loadError: 'שגיאה בטעינת המשתמשים',
     refresh: 'רענן',
     adminBadge: 'אדמין',
+    planUpdated: 'המסלול עודכן',
+    planUpdateError: 'שגיאה בעדכון המסלול',
+  },
+
+  pricing: {
+    currentPlan: 'המסלול שלך',
+    upgradeTitle: 'שדרוג מסלול',
+    upgrade: 'שדרג',
+    viewPlans: 'צפה בכל המסלולים ותשלום',
+    perMonth: 'חודש',
+    tagsLabel: 'תיוגים',
+    remindersLabel: 'התראות/יום',
+    repliesLabel: 'תשובות',
+    usageTagged: 'תיוגי לקוחות',
+    usageReminders: 'התראות היום',
+    usageReplies: 'תשובות מוכנות',
+    freePlan: 'חינמי',
+    proPlan: 'בסיסי',
+    unlimitedPlan: 'ללא הגבלה',
+    payWithPayPal: 'תשלום ב-PayPal',
+    loginRequired: 'יש להתחבר לפני התשלום',
+    paymentSuccess: 'התשלום בוצע בהצלחה! חזור לתוסף והתחבר מחדש אם צריך.',
+    paymentError: 'שגיאה בעיבוד התשלום',
+  },
+
+  limits: {
+    taggedCustomers: 'הגעת למגבלת תיוגי הלקוחות במסלול שלך. שדרג כדי להמשיך.',
+    templates: 'הגעת למגבלת התשובות המוכנות במסלול שלך. שדרג כדי להוסיף עוד.',
+    remindersPerDay: 'הגעת למגבלת ההתראות היומית במסלול שלך. שדרג לקבלת עוד התראות.',
   },
 
   notes: {
@@ -80,6 +110,7 @@ export const he = {
     saveTags: 'שמור תגיות',
     savedSuccess: 'התגיות נשמרו בהצלחה',
     saving: 'שומר תגיות...',
+    limitReached: 'הגעת למגבלת תיוגי הלקוחות במסלול שלך',
   },
 
   replies: {
@@ -92,6 +123,7 @@ export const he = {
     empty: 'אין תשובות מוכנות',
     inserted: 'התשובה הוכנסה לצ\'אט',
     noResults: 'לא נמצאו תוצאות',
+    limitReached: 'הגעת למגבלת התשובות המוכנות במסלול שלך',
   },
 
   reminders: {
@@ -110,6 +142,7 @@ export const he = {
     past: 'תזכורות שעברו',
     scheduled: 'התזכורת נקבעה בהצלחה',
     invalidDate: 'יש לבחור תאריך ושעה עתידיים',
+    dailyLimitNote: 'שים לב: במסלול שלך מספר ההתראות ביום מוגבל',
   },
 
   history: {

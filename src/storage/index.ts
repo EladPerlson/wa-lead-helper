@@ -38,16 +38,6 @@ export const DEFAULT_TEMPLATES: Template[] = [
     text: 'אבדוק ואחזור אליך בהקדם.',
     createdAt: new Date().toISOString(),
   },
-  {
-    id: 'tpl-3',
-    text: 'התשלום התקבל בהצלחה.',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 'tpl-4',
-    text: 'אשמח לשלוח לך הצעת מחיר.',
-    createdAt: new Date().toISOString(),
-  },
 ];
 
 async function storageGet(keys: string | string[]): Promise<Record<string, unknown>> {

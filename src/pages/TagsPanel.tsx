@@ -8,11 +8,14 @@ import { ContactPanelGate } from '@/components/ContactPanelGate';
 import { he } from '@/i18n/he';
 import type { ContactData, DetectedContact } from '@/types';
 import { generateId } from '@/utils/id';
+import type { PlanLimits } from '@/plans';
+import { canTagCustomer } from '@/utils/limits';
 
 interface TagsPanelProps {
   contact: ContactData | null;
   detectedContact: DetectedContact | null;
   contactLoading?: boolean;
+  limits: PlanLimits;
   onUpdate: (updates: Partial<Omit<ContactData, 'phoneNumber'>>) => Promise<ContactData | null>;
   onToast: (message: string, type?: 'success' | 'error' | 'info') => void;
 }
@@ -31,6 +34,7 @@ export function TagsPanel({
   contact,
   detectedContact,
   contactLoading,
+  limits,
   onUpdate,
   onToast,
 }: TagsPanelProps) {
@@ -57,6 +61,7 @@ export function TagsPanel({
           setNewColor={setNewColor}
           onUpdate={onUpdate}
           onToast={onToast}
+          limits={limits}
           addTag={addTag}
           removeGlobalTag={removeGlobalTag}
         />
@@ -76,6 +81,7 @@ function TagsPanelContent({
   setNewColor,
   onUpdate,
   onToast,
+  limits,
   addTag,
   removeGlobalTag,
 }: {
@@ -89,6 +95,7 @@ function TagsPanelContent({
   setNewColor: (v: string) => void;
   onUpdate: TagsPanelProps['onUpdate'];
   onToast: TagsPanelProps['onToast'];
+  limits: PlanLimits;
   addTag: ReturnType<typeof useTags>['addTag'];
   removeGlobalTag: ReturnType<typeof useTags>['removeTag'];
 }) {
@@ -110,6 +117,13 @@ function TagsPanelContent({
 
   const handleSaveTags = async () => {
     if (!isDirty || saving) return;
+
+    const check = await canTagCustomer(limits, contact.phoneNumber, selected);
+    if (!check.allowed) {
+      onToast(he.tags.limitReached, 'error');
+      return;
+    }
+
     setSaving(true);
     try {
       await onUpdate({ tags: selected });

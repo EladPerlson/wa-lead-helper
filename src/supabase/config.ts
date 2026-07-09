@@ -5,3 +5,13 @@ export const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 
 // כתובות מייל שמוגדרות כאדמין — רק הן רואות את דף האדמין
 export const ADMIN_EMAILS = ['eladtvil@gmail.com'];
+
+// PayPal — מלא אחרי יצירת אפליקציה ומסלולי מנוי ב-PayPal Developer Dashboard
+// https://developer.paypal.com/dashboard/applications
+export const PAYPAL_CLIENT_ID = 'YOUR_PAYPAL_CLIENT_ID';
+
+/** מזהי מסלולי מנוי חודשיים ב-PayPal (Subscriptions → Plans) */
+export const PAYPAL_PLAN_IDS = {
+  pro: 'P-PRO-PLAN-ID',
+  unlimited: 'P-UNLIMITED-PLAN-ID',
+} as const;

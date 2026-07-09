@@ -1,6 +1,6 @@
 {
   "name": "wa-lead-helper",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "WA Lead Helper - Chrome Extension for WhatsApp Web lead management",
   "type": "module",
   "scripts": {

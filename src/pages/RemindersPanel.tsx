@@ -8,10 +8,14 @@ import type { ContactData, DetectedContact, Reminder } from '@/types';
 import { formatDateTimeHe, isFutureDateTime, sortRemindersByDate, toDateInputValue, toTimeInputValue } from '@/utils/date';
 import { generateId } from '@/utils/id';
 
+import type { PlanLimits } from '@/plans';
+import { isUnlimited } from '@/plans';
+
 interface RemindersPanelProps {
   contact: ContactData | null;
   detectedContact: DetectedContact | null;
   contactLoading?: boolean;
+  limits: PlanLimits;
   onUpdate: (updates: Partial<Omit<ContactData, 'phoneNumber'>>) => Promise<ContactData | null>;
   onToast: (message: string, type?: 'success' | 'error' | 'info') => void;
   onOpenReminder: (reminderId: string) => void;
@@ -21,6 +25,7 @@ export function RemindersPanel({
   contact,
   detectedContact,
   contactLoading,
+  limits,
   onUpdate,
   onToast,
   onOpenReminder,
@@ -49,6 +54,7 @@ export function RemindersPanel({
           setTime={setTime}
           onUpdate={onUpdate}
           onToast={onToast}
+          limits={limits}
           onOpenReminder={onOpenReminder}
         />
       )}
@@ -68,6 +74,7 @@ function RemindersPanelContent({
   setTime,
   onUpdate,
   onToast,
+  limits,
   onOpenReminder,
 }: {
   contact: ContactData;
@@ -81,6 +88,7 @@ function RemindersPanelContent({
   setTime: (v: string) => void;
   onUpdate: RemindersPanelProps['onUpdate'];
   onToast: RemindersPanelProps['onToast'];
+  limits: PlanLimits;
   onOpenReminder: RemindersPanelProps['onOpenReminder'];
 }) {
   const reminders = sortRemindersByDate(contact.reminders);
@@ -127,6 +135,9 @@ function RemindersPanelContent({
   return (
     <div className="p-4 space-y-4 animate-fade-in" dir="rtl">
       <h3 className="text-sm font-semibold text-notion-text text-right">{he.reminders.title}</h3>
+      {!isUnlimited(limits.remindersPerDay) && (
+        <p className="text-xs text-notion-muted text-right">{he.reminders.dailyLimitNote}</p>
+      )}
 
       <div className="space-y-2 max-h-[320px] overflow-y-auto wa-lh-scroll">
         {reminders.length === 0 ? (

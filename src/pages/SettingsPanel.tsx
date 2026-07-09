@@ -8,14 +8,17 @@ import { PRIVACY_POLICY_URL } from '@/constants/urls';
 import { he } from '@/i18n/he';
 import { useSettings } from '@/hooks/useSettings';
 import type { AuthState } from '@/hooks/useAuth';
+import type { SubscriptionState } from '@/hooks/useSubscription';
+import { PricingPanel } from '@/components/PricingPanel';
 
 interface SettingsPanelProps {
   auth?: AuthState;
+  subscription?: SubscriptionState;
   onToast: (message: string, type?: 'success' | 'error' | 'info') => void;
   onThemeChange: (darkMode: boolean) => void;
 }
 
-export function SettingsPanel({ auth, onToast, onThemeChange }: SettingsPanelProps) {
+export function SettingsPanel({ auth, subscription, onToast, onThemeChange }: SettingsPanelProps) {
   const { settings, updateSettings } = useSettings();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -67,6 +70,13 @@ export function SettingsPanel({ auth, onToast, onThemeChange }: SettingsPanelPro
   return (
     <div className="p-4 space-y-4 animate-fade-in" dir="rtl">
       <h3 className="text-sm font-semibold text-notion-text text-right">{he.settings.title}</h3>
+
+      {auth?.session && subscription && (
+        <PricingPanel
+          subscription={subscription}
+          userEmail={auth.session.user.email}
+        />
+      )}
 
       {auth?.session && (
         <Card title={he.auth.account}>

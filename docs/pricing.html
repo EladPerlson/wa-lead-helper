@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>מסלולים ותשלום - WA Lead Helper</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f7f7f5;
+        --surface: #ffffff;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --accent: #2563eb;
+        --accent-hover: #1d4ed8;
+        --border: #e5e7eb;
+        --error: #dc2626;
+        --success: #16a34a;
+        --highlight: #eff6ff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: 'Heebo', 'Assistant', Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.7;
+        padding: 24px 16px 40px;
+      }
+
+      .wrap {
+        max-width: 960px;
+        margin: 0 auto;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 28px;
+      }
+
+      .logo {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 700;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 26px;
+      }
+
+      .subtitle {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .auth-card,
+      .plan-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+      }
+
+      .auth-card {
+        max-width: 420px;
+        margin: 0 auto 28px;
+      }
+
+      .plans {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 16px;
+      }
+
+      .plan-card h2 {
+        margin: 0 0 4px;
+        font-size: 20px;
+      }
+
+      .price {
+        font-size: 28px;
+        font-weight: 700;
+        margin: 8px 0 12px;
+      }
+
+      .price span {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--muted);
+      }
+
+      .features {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 16px;
+        font-size: 14px;
+      }
+
+      .features li {
+        padding: 4px 0;
+        border-bottom: 1px dashed var(--border);
+      }
+
+      .features li:last-child {
+        border-bottom: none;
+      }
+
+      .plan-card.featured {
+        border-color: var(--accent);
+        background: var(--highlight);
+      }
+
+      label {
+        display: block;
+        text-align: right;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 6px;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 14px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        margin-bottom: 12px;
+        direction: ltr;
+        text-align: left;
+        font-family: inherit;
+      }
+
+      button.primary {
+        width: 100%;
+        padding: 11px;
+        font-size: 15px;
+        font-weight: 600;
+        color: #fff;
+        background: var(--accent);
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-family: inherit;
+      }
+
+      button.primary:hover {
+        background: var(--accent-hover);
+      }
+
+      button.primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .msg {
+        font-size: 13px;
+        margin-top: 10px;
+        text-align: center;
+      }
+
+      .msg.error {
+        color: var(--error);
+      }
+
+      .msg.success {
+        color: var(--success);
+      }
+
+      .logged-in {
+        text-align: center;
+        font-size: 14px;
+        color: var(--muted);
+        margin-bottom: 20px;
+      }
+
+      .logged-in strong {
+        color: var(--text);
+      }
+
+      .paypal-slot {
+        min-height: 42px;
+      }
+
+      .badge-free {
+        display: inline-block;
+        background: #e5e7eb;
+        color: #374151;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 999px;
+        margin-bottom: 8px;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="header">
+        <div class="logo">WA</div>
+        <h1>בחר את המסלול שלך</h1>
+        <p class="subtitle">תשלום מאובטח דרך PayPal · ביטול בכל עת</p>
+      </div>
+
+      <div id="auth-section" class="auth-card">
+        <h2 style="margin: 0 0 12px; font-size: 18px; text-align: center">התחברות לפני תשלום</h2>
+        <label for="email">מייל</label>
+        <input id="email" type="email" autocomplete="email" placeholder="name@example.com" />
+        <label for="password">סיסמה</label>
+        <input id="password" type="password" autocomplete="current-password" placeholder="סיסמה" />
+        <button id="login-btn" class="primary" type="button">התחבר</button>
+        <div id="auth-msg" class="msg"></div>
+      </div>
+
+      <div id="logged-in-bar" class="logged-in hidden">
+        מחובר בתור <strong id="user-email" dir="ltr"></strong>
+        <button id="logout-btn" type="button" style="background:none;border:none;color:var(--accent);cursor:pointer;font-family:inherit;font-size:13px;margin-right:8px">התנתק</button>
+      </div>
+
+      <div class="plans">
+        <div class="plan-card">
+          <span class="badge-free">ללא כרטיס אשראי</span>
+          <h2>חינמי</h2>
+          <div class="price">$0</div>
+          <ul class="features">
+            <li>עד 3 תיוגי לקוחות</li>
+            <li>התראה אחת ביום</li>
+            <li>עד 2 תשובות מוכנות</li>
+          </ul>
+          <p class="msg" style="color: var(--muted)">ברירת המחדל לכל משתמש חדש</p>
+        </div>
+
+        <div class="plan-card featured" id="plan-pro-card">
+          <h2>בסיסי</h2>
+          <div class="price">$10 <span>/ חודש</span></div>
+          <ul class="features">
+            <li>עד 12 תיוגי לקוחות</li>
+            <li>6 התראות ביום</li>
+            <li>עד 6 תשובות מוכנות</li>
+          </ul>
+          <div id="paypal-pro" class="paypal-slot"></div>
+        </div>
+
+        <div class="plan-card" id="plan-unlimited-card">
+          <h2>ללא הגבלה</h2>
+          <div class="price">$39 <span>/ חודש</span></div>
+          <ul class="features">
+            <li>תיוגי לקוחות ללא הגבלה</li>
+            <li>התראות ללא הגבלה</li>
+            <li>תשובות מוכנות ללא הגבלה</li>
+          </ul>
+          <div id="paypal-unlimited" class="paypal-slot"></div>
+        </div>
+      </div>
+
+      <div id="payment-msg" class="msg" style="text-align: center; margin-top: 20px"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script
+      id="paypal-sdk"
+      src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&vault=true&intent=subscription"
+      data-sdk-integration-source="button-factory"
+    ></script>
+    <script>
+      const SUPABASE_URL = 'https://dxcwydqevucijdllyfxf.supabase.co';
+      const SUPABASE_ANON_KEY =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4Y3d5ZHFldnVjaWpkbGx5ZnhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwODIzMjEsImV4cCI6MjA5ODY1ODMyMX0.w_DDVHpRjDNov3svSqOIGBNZElb8jAjMG6TVVFbTvCA';
+
+      const PAYPAL_PLAN_IDS = {
+        pro: 'P-PRO-PLAN-ID',
+        unlimited: 'P-UNLIMITED-PLAN-ID',
+      };
+
+      const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      const authSection = document.getElementById('auth-section');
+      const loggedInBar = document.getElementById('logged-in-bar');
+      const userEmailEl = document.getElementById('user-email');
+      const authMsg = document.getElementById('auth-msg');
+      const paymentMsg = document.getElementById('payment-msg');
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
+
+      let session = null;
+      let paypalRendered = false;
+
+      function showAuthMsg(text, type) {
+        authMsg.textContent = text;
+        authMsg.className = 'msg ' + (type || '');
+      }
+
+      function showPaymentMsg(text, type) {
+        paymentMsg.textContent = text;
+        paymentMsg.className = 'msg ' + (type || '');
+      }
+
+      function setLoggedInUI(active) {
+        if (active && session?.user?.email) {
+          authSection.classList.add('hidden');
+          loggedInBar.classList.remove('hidden');
+          userEmailEl.textContent = session.user.email;
+        } else {
+          authSection.classList.remove('hidden');
+          loggedInBar.classList.add('hidden');
+        }
+      }
+
+      async function activatePlan(plan, subscriptionId) {
+        const { error } = await client.rpc('activate_plan', {
+          p_plan: plan,
+          p_paypal_subscription_id: subscriptionId || null,
+        });
+        if (error) throw error;
+      }
+
+      function renderPayPalButtons() {
+        if (paypalRendered || !session || typeof paypal === 'undefined') return;
+        if (PAYPAL_PLAN_IDS.pro === 'P-PRO-PLAN-ID') {
+          showPaymentMsg(
+            'יש להגדיר מזהי מסלול PayPal בקובץ pricing.html וב-src/supabase/config.ts',
+            'error',
+          );
+          return;
+        }
+
+        paypalRendered = true;
+
+        paypal
+          .Buttons({
+            style: { shape: 'rect', color: 'gold', layout: 'vertical', label: 'subscribe' },
+            createSubscription: function (_data, actions) {
+              return actions.subscription.create({ plan_id: PAYPAL_PLAN_IDS.pro });
+            },
+            onApprove: async function (data) {
+              try {
+                await activatePlan('pro', data.subscriptionID);
+                showPaymentMsg('המסלול הבסיסי הופעל בהצלחה! חזור לתוסף ב-WhatsApp Web.', 'success');
+              } catch (e) {
+                showPaymentMsg('שגיאה בהפעלת המסלול. נסה שוב או פנה לתמיכה.', 'error');
+              }
+            },
+          })
+          .render('#paypal-pro');
+
+        paypal
+          .Buttons({
+            style: { shape: 'rect', color: 'gold', layout: 'vertical', label: 'subscribe' },
+            createSubscription: function (_data, actions) {
+              return actions.subscription.create({ plan_id: PAYPAL_PLAN_IDS.unlimited });
+            },
+            onApprove: async function (data) {
+              try {
+                await activatePlan('unlimited', data.subscriptionID);
+                showPaymentMsg('מסלול ללא הגבלה הופעל בהצלחה! חזור לתוסף ב-WhatsApp Web.', 'success');
+              } catch (e) {
+                showPaymentMsg('שגיאה בהפעלת המסלול. נסה שוב או פנה לתמיכה.', 'error');
+              }
+            },
+          })
+          .render('#paypal-unlimited');
+      }
+
+      async function initSession() {
+        const { data } = await client.auth.getSession();
+        session = data.session;
+        setLoggedInUI(Boolean(session));
+        if (session) renderPayPalButtons();
+      }
+
+      client.auth.onAuthStateChange((_event, newSession) => {
+        session = newSession;
+        setLoggedInUI(Boolean(session));
+        if (session && !paypalRendered) renderPayPalButtons();
+      });
+
+      document.getElementById('login-btn').addEventListener('click', async () => {
+        showAuthMsg('מתחבר...', '');
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+        if (!email || !password) {
+          showAuthMsg('יש למלא מייל וסיסמה', 'error');
+          return;
+        }
+        const { error } = await client.auth.signInWithPassword({ email, password });
+        if (error) {
+          showAuthMsg('שגיאה בהתחברות: ' + error.message, 'error');
+          return;
+        }
+        showAuthMsg('', '');
+      });
+
+      document.getElementById('logout-btn').addEventListener('click', async () => {
+        await client.auth.signOut();
+        paypalRendered = false;
+        document.getElementById('paypal-pro').innerHTML = '';
+        document.getElementById('paypal-unlimited').innerHTML = '';
+      });
+
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('email')) {
+        emailInput.value = params.get('email');
+      }
+
+      void initSession();
+    </script>
+  </body>
+</html>

@@ -33,6 +33,9 @@ export interface Template {
 
 export interface Settings {
   darkMode: boolean;
+  reminderNotificationsDate?: string;
+  reminderNotificationsCount?: number;
+  cachedPlan?: 'free' | 'pro' | 'unlimited';
 }
 
 export interface StorageSchema {
