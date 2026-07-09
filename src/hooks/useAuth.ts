@@ -55,7 +55,11 @@ export function useAuth(): AuthState {
 
   const signUp = useCallback(async (email: string, password: string) => {
     if (!supabase) return { error: 'Supabase not configured', needsEmailConfirm: false };
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: PASSWORD_RESET_URL },
+    });
     if (error) return { error: error.message, needsEmailConfirm: false };
     // אם אין session אחרי הרשמה — Supabase דורש אימות מייל
     return { error: null, needsEmailConfirm: !data.session };

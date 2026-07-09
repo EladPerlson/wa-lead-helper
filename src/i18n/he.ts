@@ -33,6 +33,7 @@ export const he = {
     sendingResetLink: 'שולח...',
     backToLogin: 'חזרה להתחברות',
     resetEmailSent: 'נשלח מייל עם קישור לאיפוס הסיסמה. בדוק את תיבת הדואר (גם בתיקיית הספאם).',
+    resetEmailHint: 'הקישור יפתח דף איפוס סיסמה בדפדפן (לא localhost).',
     enterEmailForReset: 'הזן את כתובת המייל שלך',
     logout: 'התנתק',
     loggedInAs: 'מחובר בתור',

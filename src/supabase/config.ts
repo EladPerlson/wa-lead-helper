@@ -8,10 +8,29 @@ export const ADMIN_EMAILS = ['eladtvil@gmail.com'];
 
 // PayPal — מלא אחרי יצירת אפליקציה ומסלולי מנוי ב-PayPal Developer Dashboard
 // https://developer.paypal.com/dashboard/applications
-export const PAYPAL_CLIENT_ID = 'YOUR_PAYPAL_CLIENT_ID';
+export const PAYPAL_CLIENT_ID = 'Aefglr47qDDdJYbqXwDyddCtkICbf67GI_T9KX52BAdsdXeLv2ifni4fKlpLxpeWtvQYn8JIWUmZEZWx';
 
 /** מזהי מסלולי מנוי חודשיים ב-PayPal (Subscriptions → Plans) */
 export const PAYPAL_PLAN_IDS = {
-  pro: 'P-PRO-PLAN-ID',
-  unlimited: 'P-UNLIMITED-PLAN-ID',
+  pro: 'P-5S302684SK139443NNJH645I',
+  unlimited: 'P-5NP7360783546560KNJH65MA',
 } as const;
+
+/**
+ * הגדרות חובה ב-Supabase Dashboard → Authentication → URL Configuration:
+ *
+ * Site URL:
+ *   https://eladperlson.github.io/wa-lead-helper/reset.html
+ *
+ * Redirect URLs (הוסף את כולן):
+ *   https://eladperlson.github.io/wa-lead-helper/reset.html
+ *   https://eladperlson.github.io/wa-lead-helper/pricing.html
+ *
+ * בלי ההגדרות האלה Supabase מפנה ל-localhost:3000 וקישור איפוס הסיסמה נשבר.
+ */
+export const SUPABASE_SITE_URL = 'https://eladperlson.github.io/wa-lead-helper/reset.html';
+
+export const SUPABASE_REDIRECT_URLS = [
+  'https://eladperlson.github.io/wa-lead-helper/reset.html',
+  'https://eladperlson.github.io/wa-lead-helper/pricing.html',
+] as const;

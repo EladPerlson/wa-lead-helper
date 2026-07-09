@@ -197,7 +197,12 @@
       const SUPABASE_ANON_KEY =
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4Y3d5ZHFldnVjaWpkbGx5ZnhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwODIzMjEsImV4cCI6MjA5ODY1ODMyMX0.w_DDVHpRjDNov3svSqOIGBNZElb8jAjMG6TVVFbTvCA';
 
-      const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        auth: {
+          detectSessionInUrl: true,
+          flowType: 'implicit',
+        },
+      });
 
       const loadingWrap = document.getElementById('loading-wrap');
       const invalidWrap = document.getElementById('invalid-wrap');
@@ -221,16 +226,46 @@
         invalidWrap.style.display = 'block';
       }
 
+      async function restoreSessionFromHash() {
+        const hash = window.location.hash.startsWith('#')
+          ? window.location.hash.slice(1)
+          : window.location.hash;
+        const params = new URLSearchParams(hash);
+        const accessToken = params.get('access_token');
+        const refreshToken = params.get('refresh_token');
+        const type = params.get('type');
+
+        if (accessToken && refreshToken) {
+          const { error } = await client.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
+          if (!error && (type === 'recovery' || type === 'signup')) {
+            showForm();
+            return true;
+          }
+        }
+
+        const { data } = await client.auth.getSession();
+        if (data.session) {
+          showForm();
+          return true;
+        }
+        return false;
+      }
+
       client.auth.onAuthStateChange((event, session) => {
-        if (session) showForm();
+        if (event === 'PASSWORD_RECOVERY' || session) showForm();
       });
 
-      // הקישור מהמייל מכיל טוקן ב-hash; נותנים לספרייה רגע לעבד אותו
-      setTimeout(async () => {
-        const { data } = await client.auth.getSession();
-        if (data.session) showForm();
-        else showInvalid();
-      }, 1200);
+      void restoreSessionFromHash().then((ok) => {
+        if (!ok) {
+          setTimeout(async () => {
+            const restored = await restoreSessionFromHash();
+            if (!restored) showInvalid();
+          }, 1200);
+        }
+      });
 
       document.getElementById('reset-form').addEventListener('submit', async (e) => {
         e.preventDefault();
