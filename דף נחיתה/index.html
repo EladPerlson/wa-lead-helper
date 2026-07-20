@@ -681,56 +681,277 @@
       z-index: 1;
     }
 
-    .video-placeholder {
-      margin: 0 auto 0;
-      max-width: 860px;
-      border-radius: 20px;
-      border: 1px solid var(--border-glass);
-      background:
-        linear-gradient(135deg, rgba(37, 211, 102, 0.12), rgba(18, 140, 126, 0.06)),
-        var(--bg-card);
-      aspect-ratio: 16 / 9;
+    /* 3D product stage */
+    .stage3d {
+      position: relative;
+      max-width: 920px;
+      margin: 0 auto;
+      height: 420px;
+      perspective: 1400px;
+      perspective-origin: 50% 45%;
+    }
+
+    .stage3d-floor {
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      bottom: 18px;
+      height: 90px;
+      background: radial-gradient(ellipse at center, rgba(0, 173, 181, 0.22), transparent 70%);
+      filter: blur(8px);
+      pointer-events: none;
+    }
+
+    .stage3d-world {
+      position: absolute;
+      inset: 0;
       display: flex;
       align-items: center;
       justify-content: center;
+      transform-style: preserve-3d;
+      transition: transform 0.15s ease-out;
+      will-change: transform;
+    }
+
+    .stage3d-spin {
+      position: relative;
+      width: min(720px, 92%);
+      height: 300px;
+      transform-style: preserve-3d;
+      animation: stageSpin 14s linear infinite;
+    }
+
+    .stage3d:hover .stage3d-spin {
+      animation-play-state: paused;
+    }
+
+    @keyframes stageSpin {
+      from { transform: rotateY(-18deg) rotateX(8deg); }
+      50% { transform: rotateY(18deg) rotateX(6deg); }
+      to { transform: rotateY(-18deg) rotateX(8deg); }
+    }
+
+    .stage-panel {
+      position: absolute;
+      border-radius: 18px;
+      border: 1px solid rgba(238, 238, 238, 0.12);
+      background: linear-gradient(160deg, #393E46 0%, #2a3038 100%);
+      box-shadow:
+        0 30px 60px rgba(0, 0, 0, 0.45),
+        0 0 0 1px rgba(0, 173, 181, 0.08),
+        inset 0 1px 0 rgba(238, 238, 238, 0.06);
+      transform-style: preserve-3d;
       overflow: hidden;
     }
 
-    .video-placeholder-inner {
-      text-align: center;
-      padding: 24px;
-      max-width: 480px;
+    .stage-panel-main {
+      width: 58%;
+      height: 260px;
+      left: 4%;
+      top: 20px;
+      transform: translateZ(40px);
     }
 
-    .video-play {
-      width: 72px;
-      height: 72px;
-      margin: 0 auto 16px;
+    .stage-panel-side {
+      width: 34%;
+      height: 240px;
+      right: 2%;
+      top: 40px;
+      transform: translateZ(90px) rotateY(-12deg);
+      border-color: rgba(0, 173, 181, 0.35);
+      box-shadow:
+        0 30px 60px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(0, 173, 181, 0.18);
+    }
+
+    .stage-panel-chrome {
+      height: 28px;
+      background: #1a1f27;
+      border-bottom: 1px solid rgba(238, 238, 238, 0.08);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 12px;
+    }
+
+    .stage-dot {
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
+      background: rgba(238, 238, 238, 0.2);
+    }
+
+    .stage-dot:nth-child(1) { background: #ff5f57; }
+    .stage-dot:nth-child(2) { background: #febc2e; }
+    .stage-dot:nth-child(3) { background: #28c840; }
+
+    .stage-panel-body { padding: 12px; height: calc(100% - 28px); }
+
+    .stage-chat-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px;
+      border-radius: 10px;
+      margin-bottom: 6px;
+      background: rgba(238, 238, 238, 0.03);
+    }
+
+    .stage-chat-row.hot {
+      background: rgba(0, 173, 181, 0.1);
+      border: 1px solid rgba(0, 173, 181, 0.25);
+      animation: stagePulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes stagePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0, 173, 181, 0.2); }
+      50% { box-shadow: 0 0 0 6px rgba(0, 173, 181, 0); }
+    }
+
+    .stage-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: linear-gradient(145deg, #00ADB5, #008f96);
+      color: #EEEEEE;
+      font-size: 0.75rem;
+      font-weight: 800;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--wa-green);
-      color: #04140a;
-      font-size: 1.5rem;
-      box-shadow: 0 0 40px var(--wa-green-glow);
+      flex-shrink: 0;
     }
 
-    .video-placeholder-title {
-      font-size: 1.15rem;
+    .stage-chat-meta { flex: 1; min-width: 0; text-align: right; }
+    .stage-chat-name { font-size: 0.72rem; font-weight: 700; color: #EEEEEE; }
+    .stage-chat-preview { font-size: 0.62rem; color: rgba(238,238,238,0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .stage-tag-mini {
+      font-size: 0.55rem;
       font-weight: 700;
-      margin-bottom: 8px;
+      padding: 2px 7px;
+      border-radius: 100px;
+      background: rgba(0, 173, 181, 0.2);
+      color: #00ADB5;
+      margin-top: 3px;
+      display: inline-block;
     }
 
-    .video-placeholder-hint {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
+    .stage-side-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #EEEEEE;
+    }
+
+    .stage-side-brand span {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #00ADB5, #008f96);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      box-shadow: 0 0 16px rgba(0, 173, 181, 0.4);
+    }
+
+    .stage-ai-card {
+      padding: 10px;
+      border-radius: 12px;
+      background: rgba(0, 173, 181, 0.1);
+      border: 1px solid rgba(0, 173, 181, 0.3);
+      font-size: 0.65rem;
       line-height: 1.5;
+      color: #EEEEEE;
+      animation: stageAiIn 4s ease-in-out infinite;
     }
 
-    .video-placeholder-hint code {
-      font-size: 0.85em;
-      color: var(--wa-green);
+    @keyframes stageAiIn {
+      0%, 100% { opacity: 0.7; transform: translateY(0); }
+      50% { opacity: 1; transform: translateY(-3px); }
+    }
+
+    .stage-ai-label {
+      font-size: 0.58rem;
+      font-weight: 800;
+      color: #00ADB5;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .stage-orbit {
+      position: absolute;
+      border-radius: 100px;
+      padding: 6px 12px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: #EEEEEE;
+      background: #393E46;
+      border: 1px solid rgba(0, 173, 181, 0.35);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 16px rgba(0, 173, 181, 0.15);
+      white-space: nowrap;
+      transform-style: preserve-3d;
+      animation: stageFloat 5s ease-in-out infinite;
+    }
+
+    .stage-orbit-1 {
+      top: 8%;
+      left: 8%;
+      transform: translateZ(140px);
+      animation-delay: 0s;
+    }
+
+    .stage-orbit-2 {
+      top: 12%;
+      right: 6%;
+      transform: translateZ(160px);
+      animation-delay: 0.8s;
+      color: #00ADB5;
+    }
+
+    .stage-orbit-3 {
+      bottom: 12%;
+      left: 18%;
+      transform: translateZ(120px);
+      animation-delay: 1.4s;
+    }
+
+    .stage-orbit-4 {
+      bottom: 18%;
+      right: 12%;
+      transform: translateZ(150px);
+      animation-delay: 2s;
+      background: linear-gradient(135deg, rgba(0,173,181,0.25), #393E46);
+    }
+
+    @keyframes stageFloat {
+      0%, 100% { transform: translateZ(var(--z, 140px)) translateY(0); }
+      50% { transform: translateZ(var(--z, 140px)) translateY(-10px); }
+    }
+
+    .stage-orbit-1 { --z: 140px; }
+    .stage-orbit-2 { --z: 160px; }
+    .stage-orbit-3 { --z: 120px; }
+    .stage-orbit-4 { --z: 150px; }
+
+    @media (max-width: 700px) {
+      .stage3d { height: 340px; }
+      .stage3d-spin { height: 260px; animation: none; transform: rotateY(-8deg) rotateX(4deg); }
+      .stage-panel-main { width: 62%; height: 220px; }
+      .stage-panel-side { width: 36%; height: 200px; top: 50px; }
+      .stage-orbit { font-size: 0.58rem; padding: 4px 8px; }
+    }
+
+    @media (max-width: 500px) {
+      .stage3d { height: 300px; }
+      .stage-panel-side { display: none; }
+      .stage-panel-main { width: 88%; left: 6%; height: 230px; }
     }
 
     /* How it works */
@@ -1656,6 +1877,8 @@
       .reveal { opacity: 1; transform: none; }
       .hero h1 .word { opacity: 1; transform: none; }
       .mockup-3d { transform: none !important; }
+      .stage3d-spin { animation: none !important; transform: rotateY(-8deg) rotateX(4deg); }
+      .stage-orbit, .stage-ai-card, .stage-chat-row.hot { animation: none !important; }
     }
   </style>
 </head>
@@ -1946,29 +2169,76 @@
     </div>
   </section>
 
-  <!-- 30s product video placeholder -->
-  <section id="video" class="video-section">
+  <!-- 3D product stage -->
+  <section id="demo3d" class="video-section">
     <div class="container">
       <div class="reveal text-center">
-        <span class="section-label">סרטון קצר</span>
-        <h2 class="section-title">רואים את התוסף בפעולה ב־30 שניות</h2>
-        <p class="section-desc">הכניסו כאן סרטון הדגמה (Loom / YouTube / MP4). בינתיים מוצג מציין מקום.</p>
+        <span class="section-label">בפעולה חיה</span>
+        <h2 class="section-title">התוסף עובד מול העיניים — בתלת־ממד</h2>
+        <p class="section-desc">הזיזו את העכבר מעל הסצנה. רואים תיוג, AI ותשובות מוכנות — בלי לצאת מוואטסאפ.</p>
       </div>
-      <div class="video-placeholder reveal" role="img" aria-label="מציין מקום לסרטון הדגמה של 30 שניות">
-        <div class="video-placeholder-inner">
-          <div class="video-play" aria-hidden="true">▶</div>
-          <p class="video-placeholder-title">סרטון הדגמה — 30 שניות</p>
-          <p class="video-placeholder-hint">
-            להחלפה: העלו קובץ <code>demo-30s.mp4</code> לתיקייה זו, או הדביקו iframe של YouTube/Loom במקום הבלוק הזה.
-          </p>
-          <!--
-            דוגמה להחלפה בוידאו אמיתי:
-            <video controls playsinline poster="demo-poster.jpg" style="width:100%;border-radius:16px">
-              <source src="demo-30s.mp4" type="video/mp4" />
-            </video>
-            או:
-            <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="WA Lead Helper demo" allowfullscreen></iframe>
-          -->
+
+      <div class="stage3d reveal" id="stage3d" aria-label="הדגמה תלת־ממדית של WA Lead Helper">
+        <div class="stage3d-floor"></div>
+        <div class="stage3d-world" id="stage3d-world">
+          <div class="stage3d-spin">
+            <div class="stage-orbit stage-orbit-1">🔥 ליד חם</div>
+            <div class="stage-orbit stage-orbit-2">✦ תשובת AI</div>
+            <div class="stage-orbit stage-orbit-3">⏰ פולואפ</div>
+            <div class="stage-orbit stage-orbit-4">✓ נסגר</div>
+
+            <div class="stage-panel stage-panel-main">
+              <div class="stage-panel-chrome">
+                <span class="stage-dot"></span>
+                <span class="stage-dot"></span>
+                <span class="stage-dot"></span>
+              </div>
+              <div class="stage-panel-body">
+                <div class="stage-chat-row hot">
+                  <div class="stage-avatar">מ</div>
+                  <div class="stage-chat-meta">
+                    <div class="stage-chat-name">מיכל - קוסמטיקה</div>
+                    <div class="stage-chat-preview">כמה עולה טיפול פנים?</div>
+                    <span class="stage-tag-mini">🔥 ליד חם</span>
+                  </div>
+                </div>
+                <div class="stage-chat-row">
+                  <div class="stage-avatar" style="background:linear-gradient(145deg,#393E46,#2a3038)">ר</div>
+                  <div class="stage-chat-meta">
+                    <div class="stage-chat-name">רונית - מספרה</div>
+                    <div class="stage-chat-preview">אפשר לקבוע תור?</div>
+                    <span class="stage-tag-mini">ליד חדש</span>
+                  </div>
+                </div>
+                <div class="stage-chat-row">
+                  <div class="stage-avatar" style="background:linear-gradient(145deg,#008f96,#00ADB5)">י</div>
+                  <div class="stage-chat-meta">
+                    <div class="stage-chat-name">יוסי הובלות</div>
+                    <div class="stage-chat-preview">תודה, נדבר מחר</div>
+                    <span class="stage-tag-mini">בטיפול</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stage-panel stage-panel-side">
+              <div class="stage-panel-chrome">
+                <span class="stage-dot"></span>
+                <span class="stage-dot"></span>
+                <span class="stage-dot"></span>
+              </div>
+              <div class="stage-panel-body">
+                <div class="stage-side-brand">
+                  <span>AI</span>
+                  WA Lead Helper
+                </div>
+                <div class="stage-ai-label">✦ הצעה לפי השיחה</div>
+                <div class="stage-ai-card">
+                  היי מיכל! טיפול פנים + איפור לאירוע זה בערך 450–650 ₪. יש לי פנוי ביום שישי — רוצה שאשריין?
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -2497,6 +2767,26 @@
 
       scene.addEventListener('mouseleave', () => {
         mockup.style.transform = 'perspective(1200px) rotateY(-8deg) rotateX(2deg)';
+      });
+    })();
+
+    // 3D stage mouse parallax
+    (function() {
+      var stage = document.getElementById('stage3d');
+      var world = document.getElementById('stage3d-world');
+      if (!stage || !world) return;
+      var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReduced || window.innerWidth <= 700) return;
+
+      stage.addEventListener('mousemove', function(e) {
+        var rect = stage.getBoundingClientRect();
+        var x = (e.clientX - rect.left) / rect.width - 0.5;
+        var y = (e.clientY - rect.top) / rect.height - 0.5;
+        world.style.transform = 'rotateY(' + (x * 14) + 'deg) rotateX(' + (-y * 10) + 'deg)';
+      });
+
+      stage.addEventListener('mouseleave', function() {
+        world.style.transform = 'rotateY(0deg) rotateX(0deg)';
       });
     })();
 
