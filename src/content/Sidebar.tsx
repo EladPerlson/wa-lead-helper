@@ -180,11 +180,11 @@ export function Sidebar({ contact, listContact, chatSwitching, onClose }: Sideba
         width: `${PANEL_WIDTH_PX}px`,
       }}
     >
-      <header className="flex items-center gap-2.5 px-3 py-3 shrink-0 border-b border-notion-border bg-notion-bg/80 backdrop-blur-sm">
+      <header className="flex items-center gap-2.5 px-3 py-3.5 shrink-0 border-b border-notion-border/80 bg-[#222831]/90 backdrop-blur-md">
         <button
           type="button"
           onClick={onClose}
-          className="w-8 h-8 flex items-center justify-center rounded-xl text-notion-muted hover:bg-notion-surface hover:text-notion-text border border-transparent hover:border-notion-border transition-colors"
+          className="w-9 h-9 flex items-center justify-center rounded-xl text-notion-muted hover:bg-notion-surface hover:text-notion-text border border-notion-border/60 transition-colors"
           title={he.toggle.close}
           aria-label={he.toggle.close}
         >
@@ -194,7 +194,7 @@ export function Sidebar({ contact, listContact, chatSwitching, onClose }: Sideba
         <button
           type="button"
           onClick={toggleTheme}
-          className="w-8 h-8 flex items-center justify-center rounded-xl text-notion-muted hover:text-notion-accent hover:bg-notion-soft border border-transparent hover:border-notion-border transition-colors"
+          className="w-9 h-9 flex items-center justify-center rounded-xl text-notion-muted hover:text-notion-accent hover:bg-notion-soft border border-notion-border/60 transition-colors"
           title={he.settings.darkMode}
           aria-label={he.settings.darkMode}
         >
@@ -202,15 +202,17 @@ export function Sidebar({ contact, listContact, chatSwitching, onClose }: Sideba
         </button>
 
         <div className="flex-1 min-w-0 text-right">
-          <div className="flex items-center justify-end gap-2">
-            <h1 className="text-sm font-bold text-notion-text wa-lh-brand">
-              <span className="text-notion-accent">WA</span> Lead Helper
-            </h1>
-            <span className="inline-flex h-6 w-6 items-center justify-center rounded-lg wa-lh-accent-gradient text-[10px] font-bold text-brand-mist shrink-0">
+          <div className="flex items-center justify-end gap-2.5">
+            <div className="min-w-0">
+              <h1 className="text-sm font-bold text-brand-mist wa-lh-brand tracking-wide">
+                <span className="text-notion-accent">WA</span> Lead Helper
+              </h1>
+              <p className="text-[11px] text-notion-muted truncate mt-0.5">{headerSubtitle}</p>
+            </div>
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl wa-lh-accent-gradient text-[11px] font-black text-brand-mist shrink-0 shadow-[0_6px_16px_rgba(0,173,181,0.4)]">
               WA
             </span>
           </div>
-          <p className="text-[11px] text-notion-muted truncate mt-0.5">{headerSubtitle}</p>
         </div>
       </header>
 

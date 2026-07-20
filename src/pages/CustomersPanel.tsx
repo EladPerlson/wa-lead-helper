@@ -180,30 +180,39 @@ export function CustomersPanel({ onToast }: CustomersPanelProps) {
             const subtitle = getContactPhoneSubtitle(contact);
             const status = getLeadStatus(contact);
 
+            const initial = (label.trim().charAt(0) || '?').toUpperCase();
+
             return (
-              <Card key={contact.phoneNumber} className="p-3">
+              <div key={contact.phoneNumber} className="wa-lh-tile p-3.5 wa-lh-rise">
                 <div className="text-right">
-                  <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-1.5 shrink-0">
                       <button
                         type="button"
                         onClick={() => setNotesContact(contact)}
-                        className="w-7 h-7 flex items-center justify-center rounded-lg text-sm bg-notion-soft text-notion-accent hover:bg-notion-accent hover:text-white transition-colors"
+                        className="w-8 h-8 flex items-center justify-center rounded-xl text-sm bg-notion-soft text-notion-accent hover:bg-notion-accent hover:text-brand-mist transition-colors border border-notion-border"
                         title={he.customers.viewNotes}
                         aria-label={he.customers.viewNotes}
                       >
                         📝
                       </button>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-notion-soft text-notion-muted">
+                      <span className="text-[10px] px-2 py-1 rounded-full bg-notion-soft text-notion-accent font-bold border border-notion-accent/25">
                         {statusLabel(status)}
                       </span>
                     </div>
-                    <p className="text-sm font-semibold text-notion-text truncate">{label}</p>
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold text-notion-text truncate">{label}</p>
+                        {subtitle && (
+                          <p className="text-[11px] text-notion-muted mt-0.5 truncate">{subtitle}</p>
+                        )}
+                      </div>
+                      <span className="wa-lh-avatar">{initial}</span>
+                    </div>
                   </div>
-                  {subtitle && <p className="text-xs text-notion-muted mt-0.5">{subtitle}</p>}
 
                   {contactTags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-2 justify-end">
+                    <div className="flex flex-wrap gap-1 mt-2.5 justify-end">
                       {contactTags.slice(0, 3).map((tag) => (
                         <Badge
                           key={tag.id}
@@ -226,21 +235,21 @@ export function CustomersPanel({ onToast }: CustomersPanelProps) {
                   )}
 
                   {upcoming && (
-                    <p className="text-xs text-notion-accent mt-1.5">
+                    <p className="text-xs text-notion-accent mt-1.5 font-semibold">
                       ⏰ {upcoming.title} — {formatDateTimeHe(upcoming.date, upcoming.time)}
                     </p>
                   )}
 
                   <Button
-                    variant="secondary"
+                    variant="outline"
                     size="sm"
-                    className="mt-2 w-full"
+                    className="mt-3 w-full"
                     onClick={() => setExpandedContact(contact)}
                   >
                     🔍 {he.customers.expand}
                   </Button>
                 </div>
-              </Card>
+              </div>
             );
           })
         )}

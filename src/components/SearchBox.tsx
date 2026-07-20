@@ -20,14 +20,14 @@ export function SearchBox({ label, className, ...props }: SearchBoxProps) {
         <input
           type="search"
           className={cn(
-            'w-full pr-9 pl-3.5 py-2.5 text-sm text-right rounded-[14px]',
-            'wa-lh-field border border-notion-border bg-notion-surface2',
-            'focus:outline-none focus:ring-2 focus:ring-notion-accent/30 focus:border-notion-accent',
+            'w-full pr-9 pl-3.5 py-3 text-sm text-right rounded-2xl',
+            'wa-lh-field border border-notion-border bg-notion-surface',
+            'focus:outline-none focus:ring-2 focus:ring-notion-accent/35 focus:border-notion-accent focus:shadow-[0_0_0_4px_rgba(0,173,181,0.12)]',
             'transition-all duration-200',
             className,
           )}
           style={{
-            backgroundColor: 'var(--notion-surface-2)',
+            backgroundColor: 'var(--notion-surface)',
             color: 'var(--notion-text)',
             WebkitTextFillColor: 'var(--notion-text)',
           }}

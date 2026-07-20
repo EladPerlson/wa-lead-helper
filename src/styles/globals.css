@@ -156,26 +156,46 @@
   background: var(--notion-accent);
 }
 
-/* Ambient mesh shell */
+/* Ambient mesh shell — brand ink / slate / teal */
 .wa-lh-shell {
   position: relative;
   isolation: isolate;
   overflow: hidden;
   background:
-    radial-gradient(ellipse 80% 50% at 100% 0%, var(--notion-mesh-a), transparent 55%),
-    radial-gradient(ellipse 60% 40% at 0% 100%, var(--notion-mesh-b), transparent 50%),
+    radial-gradient(ellipse 90% 55% at 100% -10%, var(--notion-mesh-a), transparent 55%),
+    radial-gradient(ellipse 70% 45% at -10% 110%, var(--notion-mesh-b), transparent 50%),
     var(--notion-bg);
+}
+
+.dark .wa-lh-shell {
+  background:
+    radial-gradient(ellipse 90% 55% at 100% -10%, var(--notion-mesh-a), transparent 55%),
+    radial-gradient(ellipse 70% 45% at -10% 110%, rgba(0, 173, 181, 0.06), transparent 50%),
+    linear-gradient(180deg, #222831 0%, #1a1f27 100%);
 }
 
 .wa-lh-shell::before {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(
-    135deg,
-    transparent 40%,
-    color-mix(in srgb, var(--notion-accent) 4%, transparent) 50%,
-    transparent 60%
+  background-image:
+    linear-gradient(rgba(238, 238, 238, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(238, 238, 238, 0.03) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, black, transparent);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wa-lh-shell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    125deg,
+    transparent 35%,
+    color-mix(in srgb, var(--notion-accent) 6%, transparent) 50%,
+    transparent 65%
   );
   background-size: 240% 240%;
   animation: wa-lh-mesh-drift 18s ease-in-out infinite;
@@ -192,8 +212,17 @@
   position: relative;
   isolation: isolate;
   background:
-    radial-gradient(ellipse 90% 40% at 80% -10%, var(--notion-mesh-a), transparent 55%),
+    radial-gradient(ellipse 100% 45% at 90% -5%, var(--notion-mesh-a), transparent 55%),
     var(--notion-bg);
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.35);
+}
+
+.dark .wa-lh-panel {
+  background:
+    radial-gradient(ellipse 100% 45% at 90% -5%, rgba(0, 173, 181, 0.18), transparent 55%),
+    radial-gradient(ellipse 60% 35% at 0% 100%, rgba(0, 173, 181, 0.05), transparent 50%),
+    #222831;
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.5);
 }
 
 .wa-lh-panel::before {
@@ -202,30 +231,37 @@
   top: 0;
   right: 0;
   left: 0;
-  height: 2px;
+  height: 3px;
   background: linear-gradient(
     90deg,
-    transparent,
-    var(--notion-accent),
-    transparent
+    transparent 0%,
+    #00adb5 35%,
+    #33c4cb 50%,
+    #00adb5 65%,
+    transparent 100%
   );
-  opacity: 0.85;
+  opacity: 1;
   z-index: 2;
   pointer-events: none;
+  box-shadow: 0 0 18px rgba(0, 173, 181, 0.55);
 }
 
 .wa-lh-glass {
-  background: var(--notion-glass);
-  backdrop-filter: blur(16px) saturate(1.2);
-  -webkit-backdrop-filter: blur(16px) saturate(1.2);
-  border: 1px solid var(--notion-glass-border);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+  background: color-mix(in srgb, #393e46 88%, transparent);
+  backdrop-filter: blur(18px) saturate(1.25);
+  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+  border: 1px solid rgba(238, 238, 238, 0.1);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(238, 238, 238, 0.06);
 }
 
 .wa-lh-surface {
-  background: var(--notion-surface);
-  border: 1px solid var(--notion-border);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  background: #393e46;
+  border: 1px solid rgba(238, 238, 238, 0.1);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(238, 238, 238, 0.04);
 }
 
 .wa-lh-glow-ring {
@@ -264,12 +300,13 @@
 .wa-lh-tile {
   position: relative;
   overflow: hidden;
-  border-radius: 14px;
-  border: 1px solid var(--notion-border);
-  background: var(--notion-surface);
+  border-radius: 16px;
+  border: 1px solid rgba(238, 238, 238, 0.1);
+  background: linear-gradient(160deg, #3f454e 0%, #393e46 100%);
   transition:
     border-color 0.2s ease,
     transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.2s ease,
     background 0.2s ease;
 }
 
@@ -277,32 +314,49 @@
   content: '';
   position: absolute;
   inset-inline-start: 0;
-  top: 12%;
-  bottom: 12%;
+  top: 14%;
+  bottom: 14%;
   width: 3px;
   border-radius: 0 3px 3px 0;
-  background: var(--notion-accent);
-  opacity: 0;
-  transition: opacity 0.2s ease;
+  background: linear-gradient(180deg, #33c4cb, #00adb5);
+  opacity: 0.35;
+  transition: opacity 0.2s ease, box-shadow 0.2s ease;
 }
 
 .wa-lh-tile:hover {
-  border-color: color-mix(in srgb, var(--notion-accent) 45%, transparent);
-  transform: translateY(-1px);
+  border-color: rgba(0, 173, 181, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(0, 173, 181, 0.12);
 }
 
 .wa-lh-tile:hover::before,
 .wa-lh-tile.is-primary::before {
   opacity: 1;
+  box-shadow: 0 0 12px rgba(0, 173, 181, 0.55);
 }
 
 .wa-lh-tile.is-primary {
   background: linear-gradient(
     145deg,
-    color-mix(in srgb, var(--notion-accent) 22%, var(--notion-surface)),
-    var(--notion-surface)
+    color-mix(in srgb, #00adb5 24%, #393e46),
+    #393e46
   );
-  border-color: color-mix(in srgb, var(--notion-accent) 55%, transparent);
+  border-color: rgba(0, 173, 181, 0.55);
+}
+
+.wa-lh-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #eeeeee;
+  background: linear-gradient(145deg, #00adb5, #008f96);
+  box-shadow: 0 4px 12px rgba(0, 173, 181, 0.3);
+  flex-shrink: 0;
 }
 
 @keyframes wa-lh-mesh-drift {
