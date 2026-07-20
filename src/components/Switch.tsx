@@ -16,13 +16,15 @@ export function Switch({ checked, onChange, label }: SwitchProps) {
         aria-checked={checked}
         onClick={() => onChange(!checked)}
         className={cn(
-          'relative w-11 h-6 rounded-full transition-colors duration-200',
-          checked ? 'bg-notion-accent' : 'bg-notion-border',
+          'relative w-11 h-6 rounded-full transition-all duration-200 border',
+          checked
+            ? 'wa-lh-accent-gradient border-transparent'
+            : 'bg-notion-surface2 border-notion-border',
         )}
       >
         <span
           className={cn(
-            'absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200',
+            'absolute top-0.5 w-5 h-5 bg-brand-mist rounded-full shadow transition-transform duration-200',
             checked ? 'left-0.5' : 'left-[22px]',
           )}
         />

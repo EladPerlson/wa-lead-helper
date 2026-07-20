@@ -3,20 +3,21 @@ import { createRoot } from 'react-dom/client';
 import { Sidebar } from './Sidebar';
 import { ToggleButton } from './ToggleButton';
 import { ContextRefreshBanner } from './ContextRefreshBanner';
-import { FullScreenReminderOverlay } from './FullScreenReminderOverlay';
+import { WaDomHealthBanner } from './WaDomHealthBanner';
 import '@/styles/globals.css';
 import type { ChatDetectionState, MessageType } from '@/types';
 import { observeChatChanges, adjustWhatsAppLayout, openChatForContact } from '@/utils/waDom';
+import { ChatAiOffer } from './ChatAiOffer';
 import { startTagHighlighter } from './tagHighlighter';
-import { startReminderPoller } from './reminderPoller';
 import { handleChromeError, startContextWatcher } from '@/utils/extensionContext';
+import { startWaDomHealthMonitor } from '@/utils/waDomHealth';
+import { PANEL_WIDTH_PX } from './dock';
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
   const [contact, setContact] = useState<ChatDetectionState['contact']>(null);
   const [listContact, setListContact] = useState<ChatDetectionState['listContact']>(null);
   const [chatSwitching, setChatSwitching] = useState(false);
-  const [activeReminderId, setActiveReminderId] = useState<string | null>(null);
 
   useEffect(() => {
     return observeChatChanges(({ contact: detected, listContact: list, switching }) => {
@@ -35,12 +36,12 @@ function App() {
   }, []);
 
   useEffect(() => {
-    adjustWhatsAppLayout(isOpen, 350);
-  }, [isOpen]);
+    return startWaDomHealthMonitor();
+  }, []);
 
   useEffect(() => {
-    return startReminderPoller(setActiveReminderId);
-  }, []);
+    adjustWhatsAppLayout(isOpen, PANEL_WIDTH_PX);
+  }, [isOpen]);
 
   useEffect(() => {
     const listener = (message: MessageType) => {
@@ -67,12 +68,8 @@ function App() {
   return (
     <>
       <ContextRefreshBanner />
-      {activeReminderId && (
-        <FullScreenReminderOverlay
-          reminderId={activeReminderId}
-          onClose={() => setActiveReminderId(null)}
-        />
-      )}
+      <WaDomHealthBanner />
+      <ChatAiOffer />
       <ToggleButton isOpen={isOpen} onClick={() => setIsOpen((prev) => !prev)} />
       {isOpen && (
         <Sidebar
@@ -80,7 +77,6 @@ function App() {
           listContact={listContact}
           chatSwitching={chatSwitching}
           onClose={() => setIsOpen(false)}
-          onOpenReminder={setActiveReminderId}
         />
       )}
     </>

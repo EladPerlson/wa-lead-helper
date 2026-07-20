@@ -7,21 +7,23 @@ interface ToastContainerProps {
 }
 
 const typeStyles = {
-  success: 'bg-green-50 border-green-200 text-green-800 dark:bg-green-900/30 dark:border-green-700 dark:text-green-200',
-  error: 'bg-red-50 border-red-200 text-red-800 dark:bg-red-900/30 dark:border-red-700 dark:text-red-200',
-  info: 'bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-900/30 dark:border-blue-700 dark:text-blue-200',
+  success:
+    'border-notion-success/40 text-notion-success bg-notion-success/10',
+  error: 'border-notion-danger/40 text-notion-danger bg-notion-danger/10',
+  info: 'border-notion-accent/40 text-notion-accent bg-notion-soft',
 };
 
 export function ToastContainer({ toasts, onDismiss }: ToastContainerProps) {
   if (toasts.length === 0) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 z-[10001] flex flex-col gap-2" dir="rtl">
+    <div className="absolute bottom-4 left-4 z-[10001] flex flex-col gap-2 pointer-events-none" dir="rtl">
       {toasts.map((toast) => (
         <div
           key={toast.id}
           className={cn(
-            'px-4 py-2.5 rounded-xl border text-sm font-medium shadow-notion-lg animate-slide-in',
+            'pointer-events-auto px-4 py-2.5 rounded-2xl border text-sm font-medium',
+            'wa-lh-glass shadow-notion-lg animate-rise',
             'flex items-center gap-2 min-w-[200px]',
             typeStyles[toast.type],
           )}

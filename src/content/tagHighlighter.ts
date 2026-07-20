@@ -4,6 +4,7 @@ import {
   buildContactTagNameColorMap,
   findColorForChatId,
   findColorForName,
+  type TagHighlightInfo,
 } from '@/utils/contactMatch';
 import { isContextInvalidated } from '@/utils/extensionContext';
 import { isValidDisplayName } from '@/utils/contactDisplay';
@@ -49,6 +50,10 @@ function findChatNameElement(row: HTMLElement): HTMLElement | null {
   return row.querySelector('span[title]') as HTMLElement | null;
 }
 
+function formatBadgeText(info: TagHighlightInfo): string {
+  return info.emoji ? `${info.emoji} ${info.label}` : info.label;
+}
+
 function clearHighlights(): void {
   document.querySelectorAll(`.${NAME_HIGHLIGHT_CLASS}`).forEach((el) => {
     const node = el as HTMLElement;
@@ -56,54 +61,81 @@ function clearHighlights(): void {
     node.style.removeProperty('--wa-lh-tag-color');
     node.style.removeProperty('border-color');
     node.removeAttribute('data-wa-lh-tag');
+    node.removeAttribute('data-wa-lh-tag-label');
   });
 }
 
-function applyNameHighlight(el: HTMLElement, color: string): void {
+function applyNameHighlight(el: HTMLElement, info: TagHighlightInfo): void {
+  const badgeText = formatBadgeText(info);
+  const already =
+    el.classList.contains(NAME_HIGHLIGHT_CLASS) &&
+    el.getAttribute('data-wa-lh-tag') === info.color &&
+    el.getAttribute('data-wa-lh-tag-label') === badgeText;
+
+  if (already) return;
+
   el.classList.add(NAME_HIGHLIGHT_CLASS);
-  el.style.setProperty('--wa-lh-tag-color', color);
-  el.style.borderColor = color;
-  el.setAttribute('data-wa-lh-tag', color);
+  el.style.setProperty('--wa-lh-tag-color', info.color);
+  el.style.borderColor = info.color;
+  el.setAttribute('data-wa-lh-tag', info.color);
+  el.setAttribute('data-wa-lh-tag-label', badgeText);
 }
 
-function applyHighlights(idColorMap: Map<string, string>, nameColorMap: Map<string, string>): void {
-  clearHighlights();
-
+function applyHighlights(
+  idColorMap: Map<string, TagHighlightInfo>,
+  nameColorMap: Map<string, TagHighlightInfo>,
+): void {
   const pane = document.querySelector('#pane-side');
   if (!pane) return;
+
+  const highlighted = new Set<HTMLElement>();
 
   pane.querySelectorAll('[data-id]').forEach((el) => {
     const dataId = el.getAttribute('data-id');
     if (!dataId || dataId.includes('@g.us') || dataId.includes('@newsletter')) return;
 
-    const color = findColorForChatId(dataId, idColorMap);
-    if (!color) return;
+    const info = findColorForChatId(dataId, idColorMap);
+    if (!info) return;
 
     const row = findChatRowElement(el);
     if (!row) return;
 
     const nameEl = findChatNameElement(row);
     if (nameEl) {
-      applyNameHighlight(nameEl, color);
+      applyNameHighlight(nameEl, info);
+      highlighted.add(nameEl);
     }
   });
 
   pane.querySelectorAll('span[title]').forEach((el) => {
-    if (el.classList.contains(NAME_HIGHLIGHT_CLASS)) return;
-    const title = el.getAttribute('title')?.trim();
+    const htmlEl = el as HTMLElement;
+    if (highlighted.has(htmlEl)) return;
+    const title = htmlEl.getAttribute('title')?.trim();
     if (!title || !isValidDisplayName(title)) return;
 
-    const color = findColorForName(title, nameColorMap);
-    if (!color) return;
+    const info = findColorForName(title, nameColorMap);
+    if (!info) return;
 
-    applyNameHighlight(el as HTMLElement, color);
+    applyNameHighlight(htmlEl, info);
+    highlighted.add(htmlEl);
+  });
+
+  pane.querySelectorAll(`.${NAME_HIGHLIGHT_CLASS}`).forEach((el) => {
+    if (!highlighted.has(el as HTMLElement)) {
+      const node = el as HTMLElement;
+      node.classList.remove(NAME_HIGHLIGHT_CLASS);
+      node.style.removeProperty('--wa-lh-tag-color');
+      node.style.removeProperty('border-color');
+      node.removeAttribute('data-wa-lh-tag');
+      node.removeAttribute('data-wa-lh-tag-label');
+    }
   });
 }
 
 export function startTagHighlighter(): () => void {
   let applyTimer: ReturnType<typeof setTimeout> | null = null;
-  let idColorMap: Map<string, string> = new Map();
-  let nameColorMap: Map<string, string> = new Map();
+  let idColorMap: Map<string, TagHighlightInfo> = new Map();
+  let nameColorMap: Map<string, TagHighlightInfo> = new Map();
 
   const reloadColorMap = async () => {
     if (isContextInvalidated()) return;

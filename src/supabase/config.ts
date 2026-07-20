@@ -23,6 +23,13 @@ export const PAYPAL_PLAN_IDS = {
 } as const;
 
 /**
+ * מפתח OpenAI — אל תשמרו כאן מפתח אמיתי ב-git.
+ * הגדירו מקומית או העבירו ל-Edge Function בפרודקשן.
+ * מגבלות שימוש נאכפות ב-Supabase לפי מסלול.
+ */
+export const OPENAI_API_KEY = '';
+
+/**
  * הגדרות חובה ב-Supabase Dashboard → Authentication → URL Configuration:
  *
  * Site URL:
@@ -40,3 +47,10 @@ export const SUPABASE_REDIRECT_URLS = [
   'https://eladperlson.github.io/wa-lead-helper/reset.html',
   'https://eladperlson.github.io/wa-lead-helper/pricing.html',
 ] as const;
+
+/**
+ * Optional Sentry DSN for error reporting. Leave empty to disable.
+ * Can also be set per-user via settings.sentryDsn in extension storage.
+ */
+export const SENTRY_DSN = '';
+

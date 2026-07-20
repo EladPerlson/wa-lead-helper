@@ -45,8 +45,8 @@ export function HistoryPanel() {
   }
 
   return (
-    <div className="p-4 space-y-4 animate-fade-in" dir="rtl">
-      <h3 className="text-sm font-semibold text-notion-text text-right">{he.history.title}</h3>
+    <div className="p-4 space-y-4 animate-rise" dir="rtl">
+      <h3 className="text-base font-bold text-notion-text text-right">{he.history.title}</h3>
 
       <SearchBox
         label={he.customers.search}

@@ -7,7 +7,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('https://fonts.gstatic.com/s/heebo/v21/NGSpv5_NC0k9P_v6ZUCbLRAHxK1EiSysdUmm.woff2')
+  src: url('https://fonts.gstatic.com/s/heebo/v26/NGSpv5_NC0k9P_v6ZUCbLRAHxK1EiSysdUmm.woff2')
     format('woff2');
   unicode-range: U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
 }
@@ -17,7 +17,7 @@
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url('https://fonts.gstatic.com/s/heebo/v21/NGSnp5_NC0k9P_v6ZUCbLRAHxK1EiQSY1UniHg.woff2')
+  src: url('https://fonts.gstatic.com/s/heebo/v26/NGSnp5_NC0k9P_v6ZUCbLRAHxK1EiQSY1UniHg.woff2')
     format('woff2');
   unicode-range: U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
 }
@@ -27,7 +27,7 @@
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url('https://fonts.gstatic.com/s/heebo/v21/NGSnp5_NC0k9P_v6ZUCbLRAHxK1EiQSY1UniHg.woff2')
+  src: url('https://fonts.gstatic.com/s/heebo/v26/NGSnp5_NC0k9P_v6ZUCbLRAHxK1EiQSY1UniHg.woff2')
     format('woff2');
   unicode-range: U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
 }
@@ -37,36 +37,79 @@
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('https://fonts.gstatic.com/s/heebo/v21/NGSnp5_NC0k9P_v6ZUCbLRAHxK1EiQSY1UniHg.woff2')
+  src: url('https://fonts.gstatic.com/s/heebo/v26/NGSnp5_NC0k9P_v6ZUCbLRAHxK1EiQSY1UniHg.woff2')
     format('woff2');
   unicode-range: U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
 }
 
-:root {
-  --notion-bg: #ffffff;
-  --notion-surface: #f7f6f3;
-  --notion-border: #e9e9e7;
-  --notion-text: #37352f;
-  --notion-muted: #787774;
-  --notion-accent: #2563eb;
-  --notion-accent-hover: #1d4ed8;
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/outfit/v11/QGYyz_MVcBeNP4NjuG07pxAtR20.woff2')
+    format('woff2');
 }
 
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/outfit/v11/QGYyz_MVcBeNP4NjuG07pxAtR20.woff2')
+    format('woff2');
+}
+
+/* Light — mist canvas, ink text, teal pulse */
+:root {
+  --notion-bg: #eeeeee;
+  --notion-surface: #ffffff;
+  --notion-surface-2: #f3f4f6;
+  --notion-border: rgba(34, 40, 49, 0.12);
+  --notion-text: #222831;
+  --notion-muted: #5c636c;
+  --notion-accent: #00adb5;
+  --notion-accent-hover: #00969d;
+  --notion-accent-soft: rgba(0, 173, 181, 0.12);
+  --notion-glow: rgba(0, 173, 181, 0.28);
+  --notion-glass: rgba(255, 255, 255, 0.72);
+  --notion-glass-border: rgba(34, 40, 49, 0.08);
+  --notion-rail: #393e46;
+  --notion-rail-text: #eeeeee;
+  --notion-danger: #ef4444;
+  --notion-success: #16a34a;
+  --notion-mesh-a: rgba(0, 173, 181, 0.08);
+  --notion-mesh-b: rgba(57, 62, 70, 0.06);
+}
+
+/* Dark — exact brand palette #222831 / #393E46 / #00ADB5 / #EEEEEE */
 .dark {
-  --notion-bg: #191919;
-  --notion-surface: #252525;
-  --notion-border: #373737;
-  --notion-text: #e3e2e0;
-  --notion-muted: #9b9a97;
-  --notion-accent: #3b82f6;
-  --notion-accent-hover: #60a5fa;
+  --notion-bg: #222831;
+  --notion-surface: #393e46;
+  --notion-surface-2: #2a3038;
+  --notion-border: rgba(238, 238, 238, 0.1);
+  --notion-text: #eeeeee;
+  --notion-muted: rgba(238, 238, 238, 0.55);
+  --notion-accent: #00adb5;
+  --notion-accent-hover: #33c4cb;
+  --notion-accent-soft: rgba(0, 173, 181, 0.14);
+  --notion-glow: rgba(0, 173, 181, 0.32);
+  --notion-glass: rgba(57, 62, 70, 0.72);
+  --notion-glass-border: rgba(238, 238, 238, 0.12);
+  --notion-rail: #1a1f27;
+  --notion-rail-text: #eeeeee;
+  --notion-danger: #f87171;
+  --notion-success: #4ade80;
+  --notion-mesh-a: rgba(0, 173, 181, 0.14);
+  --notion-mesh-b: rgba(238, 238, 238, 0.03);
 }
 
 #wa-lead-helper-root {
   all: initial;
-  font-family: 'Heebo', 'Assistant', Arial, sans-serif;
+  font-family: 'Heebo', 'Outfit', Arial, sans-serif;
   direction: rtl;
   text-align: right;
+  color: var(--notion-text);
 }
 
 #wa-lead-helper-root *,
@@ -75,8 +118,29 @@
   box-sizing: border-box;
 }
 
+#wa-lead-helper-root input,
+#wa-lead-helper-root textarea,
+#wa-lead-helper-root select,
+#wa-lead-helper-sidebar input,
+#wa-lead-helper-sidebar textarea,
+#wa-lead-helper-sidebar select {
+  background-color: var(--notion-surface-2) !important;
+  color: var(--notion-text) !important;
+  -webkit-text-fill-color: var(--notion-text) !important;
+  caret-color: var(--notion-accent) !important;
+}
+
+#wa-lead-helper-root input::placeholder,
+#wa-lead-helper-root textarea::placeholder,
+#wa-lead-helper-sidebar input::placeholder,
+#wa-lead-helper-sidebar textarea::placeholder {
+  color: var(--notion-muted) !important;
+  -webkit-text-fill-color: var(--notion-muted) !important;
+  opacity: 1 !important;
+}
+
 .wa-lh-scroll::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 .wa-lh-scroll::-webkit-scrollbar-track {
@@ -84,12 +148,171 @@
 }
 
 .wa-lh-scroll::-webkit-scrollbar-thumb {
-  background: var(--notion-border);
-  border-radius: 999px;
+  background: color-mix(in srgb, var(--notion-accent) 40%, transparent);
+  border-radius: 4px;
 }
 
 .wa-lh-scroll::-webkit-scrollbar-thumb:hover {
-  background: var(--notion-muted);
+  background: var(--notion-accent);
+}
+
+/* Ambient mesh shell */
+.wa-lh-shell {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 80% 50% at 100% 0%, var(--notion-mesh-a), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 0% 100%, var(--notion-mesh-b), transparent 50%),
+    var(--notion-bg);
+}
+
+.wa-lh-shell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+    135deg,
+    transparent 40%,
+    color-mix(in srgb, var(--notion-accent) 4%, transparent) 50%,
+    transparent 60%
+  );
+  background-size: 240% 240%;
+  animation: wa-lh-mesh-drift 18s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wa-lh-shell > * {
+  position: relative;
+  z-index: 1;
+}
+
+.wa-lh-panel {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse 90% 40% at 80% -10%, var(--notion-mesh-a), transparent 55%),
+    var(--notion-bg);
+}
+
+.wa-lh-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--notion-accent),
+    transparent
+  );
+  opacity: 0.85;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.wa-lh-glass {
+  background: var(--notion-glass);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  border: 1px solid var(--notion-glass-border);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+}
+
+.wa-lh-surface {
+  background: var(--notion-surface);
+  border: 1px solid var(--notion-border);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+
+.wa-lh-glow-ring {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--notion-accent) 40%, transparent),
+    0 12px 32px rgba(0, 0, 0, 0.28);
+}
+
+.wa-lh-accent-gradient {
+  background: linear-gradient(135deg, #00adb5 0%, #00c6cf 50%, #008f96 100%);
+}
+
+.wa-lh-brand {
+  font-family: 'Outfit', 'Heebo', sans-serif;
+  letter-spacing: 0.03em;
+}
+
+.wa-lh-section-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--notion-muted);
+}
+
+.wa-lh-section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--notion-border), transparent);
+}
+
+.wa-lh-tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid var(--notion-border);
+  background: var(--notion-surface);
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.2s ease;
+}
+
+.wa-lh-tile::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  top: 12%;
+  bottom: 12%;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--notion-accent);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.wa-lh-tile:hover {
+  border-color: color-mix(in srgb, var(--notion-accent) 45%, transparent);
+  transform: translateY(-1px);
+}
+
+.wa-lh-tile:hover::before,
+.wa-lh-tile.is-primary::before {
+  opacity: 1;
+}
+
+.wa-lh-tile.is-primary {
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--notion-accent) 22%, var(--notion-surface)),
+    var(--notion-surface)
+  );
+  border-color: color-mix(in srgb, var(--notion-accent) 55%, transparent);
+}
+
+@keyframes wa-lh-mesh-drift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 @keyframes wa-lh-pulse {
@@ -98,35 +321,100 @@
     transform: scale(1);
   }
   50% {
-    transform: scale(1.05);
+    transform: scale(1.03);
   }
 }
 
 .wa-lh-pulse {
-  animation: wa-lh-pulse 2s ease-in-out infinite;
+  animation: wa-lh-pulse 2.6s ease-in-out infinite;
 }
 
-/* Tag indicator on WhatsApp chat list contact names (full box around name) */
+@keyframes wa-lh-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.wa-lh-rise {
+  animation: wa-lh-rise 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes wa-lh-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.wa-lh-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--notion-accent) 22%, transparent) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: wa-lh-shimmer 2.8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wa-lh-shell::before,
+  .wa-lh-pulse,
+  .wa-lh-shimmer,
+  .wa-lh-rise {
+    animation: none !important;
+  }
+}
+
+/* Tag indicator on WhatsApp chat list contact names */
 .wa-lh-tag-name-highlight {
   position: relative !important;
-  display: inline-block !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  max-width: 100% !important;
   border: 2px solid var(--wa-lh-tag-color, #ef4444) !important;
-  border-radius: 6px !important;
-  padding: 1px 6px !important;
-  background-color: color-mix(in srgb, var(--wa-lh-tag-color, #ef4444) 14%, transparent) !important;
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--wa-lh-tag-color, #ef4444) 30%, transparent) !important;
+  border-radius: 10px !important;
+  padding: 2px 8px !important;
+  background-color: color-mix(in srgb, var(--wa-lh-tag-color, #ef4444) 18%, transparent) !important;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--wa-lh-tag-color, #ef4444) 35%, transparent) !important;
+  vertical-align: middle !important;
 }
 
-/* Primary tag color border around customer name in sidebar header */
+.wa-lh-tag-name-highlight::after {
+  content: attr(data-wa-lh-tag-label) !important;
+  flex-shrink: 0 !important;
+  max-width: 140px !important;
+  padding: 3px 10px !important;
+  border-radius: 8px !important;
+  background: var(--wa-lh-tag-color, #ef4444) !important;
+  color: #fff !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  line-height: 1.4 !important;
+  letter-spacing: 0.01em !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) !important;
+  font-family: 'Heebo', 'Assistant', Arial, sans-serif !important;
+}
+
 .wa-lh-contact-name-badge {
   display: inline-block;
-  border: 2px solid var(--wa-lh-tag-color);
-  border-radius: 6px;
-  padding: 1px 6px;
+  border: 1.5px solid var(--wa-lh-tag-color);
+  border-radius: 8px;
+  padding: 1px 8px;
   background-color: color-mix(in srgb, var(--wa-lh-tag-color) 14%, transparent);
 }
 
-/* Full-area contact loading overlay inside sidebar main */
 .wa-lh-contact-loading-main {
   display: flex;
   flex: 1;

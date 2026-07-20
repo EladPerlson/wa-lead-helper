@@ -58,18 +58,18 @@ export function AdminPanel() {
   };
 
   return (
-    <div className="p-4 space-y-4 animate-fade-in" dir="rtl">
+    <div className="p-4 space-y-4 animate-rise" dir="rtl">
       <div className="flex items-center justify-between">
         <Button variant="ghost" size="sm" onClick={loadUsers} disabled={loading}>
           🔄 {he.admin.refresh}
         </Button>
-        <h3 className="text-sm font-semibold text-notion-text text-right">{he.admin.title}</h3>
+        <h3 className="text-base font-bold text-notion-text text-right">{he.admin.title}</h3>
       </div>
 
       {loading ? (
         <p className="text-xs text-notion-muted text-right">{he.common.loading}</p>
       ) : error ? (
-        <p className="text-xs text-red-500 text-right">{he.admin.loadError}</p>
+        <p className="text-xs text-notion-danger text-right">{he.admin.loadError}</p>
       ) : (
         <>
           <Card>

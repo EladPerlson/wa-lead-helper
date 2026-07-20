@@ -25,7 +25,11 @@ export default defineManifest({
     },
   },
   permissions: ['storage'],
-  host_permissions: ['https://web.whatsapp.com/*'],
+  host_permissions: [
+    'https://web.whatsapp.com/*',
+    'https://api.openai.com/*',
+    'https://*.supabase.co/*',
+  ],
   background: {
     service_worker: 'src/background/index.ts',
     type: 'module',

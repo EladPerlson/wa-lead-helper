@@ -30,6 +30,17 @@ export function NotesPanel({ contact, detectedContact, contactLoading, onUpdate 
     delay: 1000,
   });
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        void saveNow();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [saveNow]);
+
   return (
     <ContactPanelGate
       detectedContact={detectedContact}
@@ -38,8 +49,11 @@ export function NotesPanel({ contact, detectedContact, contactLoading, onUpdate 
     >
       {contact && (
         <div className="p-4 space-y-3 animate-fade-in" dir="rtl">
+          <div className="wa-lh-section-label">
+            <span>{he.notes.title}</span>
+          </div>
+          <p className="text-xs text-notion-muted text-right -mt-1">{he.notes.subtitle}</p>
           <Textarea
-            label={he.notes.title}
             placeholder={he.notes.placeholder}
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
@@ -49,7 +63,7 @@ export function NotesPanel({ contact, detectedContact, contactLoading, onUpdate 
               {he.notes.save}
             </Button>
             <span className="text-xs text-notion-muted">
-              {saving ? he.notes.saving : saved ? he.notes.saved : ''}
+              {saving ? he.notes.saving : saved ? he.notes.saved : he.notes.shortcutHint}
             </span>
           </div>
         </div>

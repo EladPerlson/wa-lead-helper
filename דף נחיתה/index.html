@@ -1,0 +1,2791 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WA Lead Helper — ניהול לידים בוואטסאפ ווב</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-deep: #0a0f0d;
+      --bg-card: rgba(255, 255, 255, 0.03);
+      --bg-glass: rgba(255, 255, 255, 0.05);
+      --border-glass: rgba(255, 255, 255, 0.08);
+      --text-primary: #f0f4f2;
+      --text-secondary: #8b9a94;
+      --text-muted: #5c6b65;
+      --wa-green: #25D366;
+      --wa-green-dark: #128C7E;
+      --wa-green-glow: rgba(37, 211, 102, 0.35);
+      --accent-blue: #3b82f6;
+      --accent-red: #ef4444;
+      --accent-orange: #f59e0b;
+      --accent-purple: #a855f7;
+      --wa-sidebar: #111b21;
+      --wa-chat-bg: #0b141a;
+      --wa-panel: #202c33;
+      --wa-input: #2a3942;
+      --wa-text: #e9edef;
+      --wa-text-muted: #8696a0;
+      --radius: 12px;
+      --radius-lg: 20px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Heebo', sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Background */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(37, 211, 102, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(37, 211, 102, 0.05) 0%, transparent 50%),
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 60px 60px, 60px 60px;
+    }
+
+    .bg-dots {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image: radial-gradient(rgba(37, 211, 102, 0.15) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.3;
+    }
+
+    /* Layout */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    section { padding: 100px 0; }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Nav */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 16px 0;
+      background: rgba(10, 15, 13, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-glass);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--wa-green), var(--wa-green-dark));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 900;
+      color: #fff;
+      box-shadow: 0 0 20px var(--wa-green-glow);
+    }
+
+    /* Buttons */
+    .btn-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 32px;
+      font-family: inherit;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      background: linear-gradient(135deg, var(--wa-green) 0%, var(--wa-green-dark) 50%, var(--wa-green) 100%);
+      background-size: 200% 200%;
+      animation: gradientShift 4s ease infinite;
+      box-shadow: 0 4px 24px var(--wa-green-glow), 0 0 0 1px rgba(37, 211, 102, 0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px var(--wa-green-glow), 0 0 0 1px rgba(37, 211, 102, 0.5);
+    }
+
+    .btn-cta-sm {
+      padding: 10px 20px;
+      font-size: 0.9rem;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    /* Hero */
+    .hero {
+      padding-top: 140px;
+      padding-bottom: 80px;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      border-radius: 100px;
+      font-size: 0.85rem;
+      color: var(--wa-green);
+      margin-bottom: 24px;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 .word {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(24px);
+      animation: wordIn 0.6s ease forwards;
+    }
+
+    @keyframes wordIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-sub {
+      font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+      color: var(--text-secondary);
+      max-width: 560px;
+      margin: 0 auto 36px;
+      line-height: 1.7;
+    }
+
+    .hero-cta-wrap { margin-bottom: 64px; }
+
+    .hero-note {
+      margin-top: 12px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* 3D Mockup */
+    .mockup-scene {
+      perspective: 1200px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .mockup-3d {
+      transform: perspective(1200px) rotateY(-8deg) rotateX(2deg);
+      transform-style: preserve-3d;
+      transition: transform 0.15s ease-out;
+      will-change: transform;
+    }
+
+    .mockup-frame {
+      background: var(--wa-sidebar);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.05),
+        0 25px 80px rgba(0,0,0,0.6),
+        0 0 60px rgba(37, 211, 102, 0.08);
+    }
+
+    .mockup-frame::before {
+      content: '';
+      display: block;
+      height: 32px;
+      background: #1a2630;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+    }
+
+    .mockup-dots {
+      position: absolute;
+      top: 10px;
+      right: 16px;
+      display: flex;
+      gap: 6px;
+    }
+
+    .mockup-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+    }
+
+    .mockup-dots span:first-child { background: #ff5f57; }
+    .mockup-dots span:nth-child(2) { background: #febc2e; }
+    .mockup-dots span:nth-child(3) { background: #28c840; }
+
+    .mockup-body {
+      display: flex;
+      height: 420px;
+      position: relative;
+    }
+
+    /* WhatsApp sidebar mockup */
+    .wa-sidebar {
+      width: 38%;
+      min-width: 200px;
+      background: var(--wa-sidebar);
+      border-left: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .wa-sidebar-header {
+      padding: 12px 14px;
+      background: var(--wa-panel);
+    }
+
+    .wa-search {
+      background: var(--wa-input);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.72rem;
+      color: var(--wa-text-muted);
+    }
+
+    .wa-filters {
+      display: flex;
+      gap: 6px;
+      padding: 10px 14px;
+      overflow-x: auto;
+    }
+
+    .wa-filter {
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 0.68rem;
+      white-space: nowrap;
+      background: var(--wa-input);
+      color: var(--wa-text-muted);
+    }
+
+    .wa-filter.active {
+      background: rgba(37, 211, 102, 0.15);
+      color: var(--wa-green);
+    }
+
+    .wa-chats { flex: 1; overflow: hidden; }
+
+    .wa-chat {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      cursor: default;
+      transition: background 0.2s;
+      position: relative;
+    }
+
+    .wa-chat:hover { background: rgba(255,255,255,0.03); }
+
+    .wa-chat.active {
+      background: rgba(37, 211, 102, 0.08);
+      border-right: 3px solid var(--wa-green);
+    }
+
+    .wa-chat.unread::after {
+      content: '';
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 8px;
+      height: 8px;
+      background: var(--wa-green);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
+      50% { opacity: 0.6; transform: translateY(-50%) scale(1.2); }
+    }
+
+    .wa-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .wa-chat-info { flex: 1; min-width: 0; }
+
+    .wa-chat-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2px;
+    }
+
+    .wa-chat-name {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--wa-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .wa-chat-time {
+      font-size: 0.65rem;
+      color: var(--wa-text-muted);
+      flex-shrink: 0;
+    }
+
+    .wa-chat-preview {
+      font-size: 0.68rem;
+      color: var(--wa-text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .wa-chat-preview.new-msg {
+      color: var(--wa-green);
+      font-weight: 600;
+      animation: msgSlide 0.5s ease;
+    }
+
+    @keyframes msgSlide {
+      from { opacity: 0; transform: translateX(10px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .wa-tag {
+      display: inline-block;
+      padding: 1px 8px;
+      border-radius: 100px;
+      font-size: 0.58rem;
+      font-weight: 600;
+      margin-top: 3px;
+      transition: all 0.4s ease;
+    }
+
+    .wa-tag-new { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+    .wa-tag-progress { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+    .wa-tag-closed { background: rgba(37, 211, 102, 0.2); color: var(--wa-green); }
+    .wa-tag-hot { background: rgba(239, 68, 68, 0.25); color: #f87171; }
+
+    .wa-tag.tag-animate {
+      animation: tagPop 0.5s ease;
+    }
+
+    @keyframes tagPop {
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* WhatsApp chat area */
+    .wa-main {
+      flex: 1;
+      background: var(--wa-chat-bg);
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .wa-main-header {
+      padding: 10px 16px;
+      background: var(--wa-panel);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .wa-main-header .wa-chat-name { font-size: 0.85rem; }
+
+    .wa-messages {
+      flex: 1;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow: hidden;
+    }
+
+    .wa-bubble {
+      max-width: 75%;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.72rem;
+      line-height: 1.5;
+      position: relative;
+    }
+
+    .wa-bubble.in {
+      background: var(--wa-panel);
+      color: var(--wa-text);
+      align-self: flex-start;
+      border-top-right-radius: 0;
+    }
+
+    .wa-bubble.out {
+      background: #005c4b;
+      color: var(--wa-text);
+      align-self: flex-end;
+      border-top-left-radius: 0;
+    }
+
+    .wa-bubble-time {
+      font-size: 0.58rem;
+      color: var(--wa-text-muted);
+      text-align: left;
+      margin-top: 4px;
+    }
+
+    .wa-bubble.incoming {
+      animation: bubbleIn 0.4s ease;
+    }
+
+    @keyframes bubbleIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Extension panel */
+    .ext-panel {
+      width: 32%;
+      min-width: 180px;
+      background: #121212;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      flex-direction: column;
+      font-size: 0.72rem;
+    }
+
+    .ext-header {
+      padding: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .ext-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .ext-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+
+    .ext-brand-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--accent-blue);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    .ext-close {
+      color: var(--text-muted);
+      font-size: 1rem;
+      cursor: default;
+    }
+
+    .ext-context {
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+      padding: 4px 8px;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 6px;
+    }
+
+    .ext-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      padding: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .ext-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 6px 4px;
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-size: 0.58rem;
+      cursor: default;
+    }
+
+    .ext-tab.active {
+      background: var(--accent-blue);
+      color: #fff;
+    }
+
+    .ext-tab svg { width: 16px; height: 16px; }
+
+    .ext-content {
+      flex: 1;
+      padding: 12px;
+      overflow: hidden;
+    }
+
+    .ext-section-title {
+      font-weight: 700;
+      margin-bottom: 10px;
+      font-size: 0.78rem;
+    }
+
+    .ext-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .ext-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 0.62rem;
+      font-weight: 600;
+    }
+
+    .ext-tag-red { background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+    .ext-tag-orange { background: rgba(245,158,11,0.2); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+    .ext-tag-green { background: rgba(37,211,102,0.2); color: var(--wa-green); border: 1px solid rgba(37,211,102,0.3); }
+    .ext-tag-blue { background: rgba(59,130,246,0.2); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+
+    .ext-add-btn {
+      margin-top: 12px;
+      width: 100%;
+      padding: 8px;
+      background: var(--wa-input);
+      border: none;
+      border-radius: 8px;
+      color: var(--wa-text-muted);
+      font-family: inherit;
+      font-size: 0.68rem;
+      cursor: default;
+    }
+
+    /* Section headers */
+    .section-label {
+      display: inline-block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--wa-green);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .section-desc {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin-bottom: 48px;
+    }
+
+    .text-center { text-align: center; }
+    .text-center .section-desc { margin-left: auto; margin-right: auto; }
+
+    .video-section {
+      padding: 72px 0 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .video-placeholder {
+      margin: 0 auto 0;
+      max-width: 860px;
+      border-radius: 20px;
+      border: 1px solid var(--border-glass);
+      background:
+        linear-gradient(135deg, rgba(37, 211, 102, 0.12), rgba(18, 140, 126, 0.06)),
+        var(--bg-card);
+      aspect-ratio: 16 / 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .video-placeholder-inner {
+      text-align: center;
+      padding: 24px;
+      max-width: 480px;
+    }
+
+    .video-play {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--wa-green);
+      color: #04140a;
+      font-size: 1.5rem;
+      box-shadow: 0 0 40px var(--wa-green-glow);
+    }
+
+    .video-placeholder-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .video-placeholder-hint {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .video-placeholder-hint code {
+      font-size: 0.85em;
+      color: var(--wa-green);
+    }
+
+    /* How it works */
+    .steps { display: flex; flex-direction: column; gap: 80px; }
+
+    .step {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .step:nth-child(even) { direction: ltr; }
+    .step:nth-child(even) > * { direction: rtl; }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--wa-green), var(--wa-green-dark));
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 16px var(--wa-green-glow);
+    }
+
+    .step h3 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .step p {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    .step-mockup {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border-glass);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+
+    /* Alert badge */
+    .alert-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-radius: 100px;
+      color: #f87171;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      animation: alertPulse 3s ease infinite;
+    }
+
+    @keyframes alertPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.3); }
+      50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+    }
+
+    .wa-chat.stale {
+      background: rgba(239, 68, 68, 0.06);
+      border-right: 3px solid var(--accent-red);
+    }
+
+    .wa-chat.stale .wa-chat-time { color: #f87171; font-weight: 600; }
+
+    /* Reminder mockup */
+    .reminder-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border-glass);
+      border-radius: 10px;
+      margin-bottom: 8px;
+    }
+
+    .reminder-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba(37, 211, 102, 0.15);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .reminder-icon svg { width: 18px; height: 18px; color: var(--wa-green); }
+
+    .reminder-text { flex: 1; }
+    .reminder-text strong { display: block; font-size: 0.75rem; margin-bottom: 2px; }
+    .reminder-text span { font-size: 0.65rem; color: var(--text-muted); }
+
+    .reminder-time {
+      font-size: 0.65rem;
+      color: var(--wa-green);
+      font-weight: 600;
+    }
+
+    /* Features grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .feature-card {
+      padding: 32px;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(20px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(37, 211, 102, 0.3);
+      box-shadow: 0 12px 40px rgba(37, 211, 102, 0.12);
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(37, 211, 102, 0.1);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .feature-icon svg { width: 24px; height: 24px; color: var(--wa-green); }
+
+    .feature-card h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .feature-card.feature-ai {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 24px;
+      align-items: start;
+      border-color: rgba(37, 211, 102, 0.25);
+      background: linear-gradient(135deg, rgba(37, 211, 102, 0.08) 0%, rgba(255,255,255,0.03) 100%);
+    }
+
+    .feature-card.feature-ai .feature-icon {
+      background: rgba(37, 211, 102, 0.2);
+      width: 56px;
+      height: 56px;
+    }
+
+    .feature-ai-badge {
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: var(--wa-green);
+      background: rgba(37, 211, 102, 0.15);
+      border: 1px solid rgba(37, 211, 102, 0.3);
+    }
+
+    /* AI section */
+    .ai-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .ai-points { list-style: none; margin-top: 24px; }
+
+    .ai-points li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 16px;
+      color: var(--text-secondary);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .ai-points li strong { color: var(--text-primary); }
+
+    .ai-check {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(37, 211, 102, 0.15);
+      color: var(--wa-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+    }
+
+    .ai-check svg { width: 14px; height: 14px; }
+
+    .ai-mockup {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border-glass);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.45), 0 0 40px rgba(37, 211, 102, 0.08);
+      background: #121212;
+    }
+
+    .ai-mockup-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #1a1a1a;
+    }
+
+    .ai-mockup-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .ai-mockup-brand-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--wa-green), var(--wa-green-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 900;
+      color: #fff;
+      box-shadow: 0 0 16px var(--wa-green-glow);
+    }
+
+    .ai-live-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      color: var(--wa-green);
+      font-weight: 600;
+    }
+
+    .ai-live-dot::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--wa-green);
+      animation: pulse 2s infinite;
+    }
+
+    .ai-mockup-body { padding: 16px; }
+
+    .ai-context {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      border: 1px solid var(--border-glass);
+    }
+
+    .ai-chat-preview {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+      max-height: 140px;
+      overflow: hidden;
+    }
+
+    .ai-bubble {
+      max-width: 85%;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+
+    .ai-bubble.customer {
+      background: var(--wa-panel);
+      color: var(--wa-text);
+      align-self: flex-start;
+      border-top-right-radius: 2px;
+    }
+
+    .ai-bubble.you {
+      background: #005c4b;
+      color: var(--wa-text);
+      align-self: flex-end;
+      border-top-left-radius: 2px;
+    }
+
+    .ai-suggest-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--wa-green);
+      margin-bottom: 10px;
+    }
+
+    .ai-suggest-label svg { width: 16px; height: 16px; }
+
+    .ai-suggestion {
+      padding: 14px;
+      background: rgba(37, 211, 102, 0.08);
+      border: 1px solid rgba(37, 211, 102, 0.25);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .ai-suggestion.active {
+      border-color: rgba(37, 211, 102, 0.5);
+      box-shadow: 0 0 20px rgba(37, 211, 102, 0.12);
+      animation: aiSuggestIn 0.5s ease;
+    }
+
+    @keyframes aiSuggestIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .ai-suggestion-text {
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      white-space: pre-line;
+    }
+
+    .ai-suggestion-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .ai-btn {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.72rem;
+      font-weight: 700;
+      border: none;
+      cursor: default;
+    }
+
+    .ai-btn-primary {
+      background: var(--wa-green);
+      color: #0a0f0d;
+    }
+
+    .ai-btn-ghost {
+      background: rgba(255,255,255,0.06);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-glass);
+    }
+
+    .ai-modes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .ai-mode {
+      padding: 5px 12px;
+      border-radius: 100px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border-glass);
+      color: var(--text-muted);
+      cursor: default;
+      transition: all 0.25s;
+    }
+
+    .ai-mode.active {
+      background: rgba(37, 211, 102, 0.15);
+      border-color: rgba(37, 211, 102, 0.4);
+      color: var(--wa-green);
+    }
+
+    .ai-ask-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      align-items: center;
+    }
+
+    .ai-ask-input {
+      flex: 1;
+      padding: 10px 14px;
+      background: var(--wa-input);
+      border: 1px solid var(--border-glass);
+      border-radius: 10px;
+      color: var(--wa-text-muted);
+      font-size: 0.75rem;
+      font-family: inherit;
+    }
+
+    .ai-ask-send {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      border: none;
+      background: var(--wa-green);
+      color: #0a0f0d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      cursor: default;
+    }
+
+    .ai-ask-send svg { width: 16px; height: 16px; }
+
+    .ai-typing {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      padding: 14px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .ai-typing.visible { display: flex; }
+
+    .ai-typing-dots span {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--wa-green);
+      animation: typingDot 1.2s infinite;
+    }
+
+    .ai-typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .ai-typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingDot {
+      0%, 80%, 100% { opacity: 0.3; transform: translateY(0); }
+      40% { opacity: 1; transform: translateY(-3px); }
+    }
+
+    /* Audience */
+    .audience-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .audience-card {
+      text-align: center;
+      padding: 32px 20px;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s, border-color 0.3s;
+    }
+
+    .audience-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(37, 211, 102, 0.25);
+    }
+
+    .audience-emoji {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .audience-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .audience-card p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Final CTA */
+    .final-cta {
+      text-align: center;
+      padding: 80px 48px;
+      background: linear-gradient(135deg, rgba(37, 211, 102, 0.08) 0%, rgba(18, 140, 126, 0.05) 100%);
+      border: 1px solid rgba(37, 211, 102, 0.15);
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .final-cta::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(37, 211, 102, 0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .final-cta h2 {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 800;
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .final-cta p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    /* Footer */
+    footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--border-glass);
+      text-align: center;
+    }
+
+    footer p {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    footer .logo {
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    /* Pain line */
+    .hero-pain {
+      font-size: clamp(1rem, 2.2vw, 1.15rem);
+      color: #f87171;
+      font-weight: 600;
+      max-width: 640px;
+      margin: -8px auto 28px;
+      line-height: 1.6;
+      padding: 12px 20px;
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 12px;
+    }
+
+    /* Before / After compare */
+    .compare-section { padding: 80px 0; }
+
+    .compare-wrapper {
+      position: relative;
+      max-width: 720px;
+      margin: 0 auto;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border-glass);
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+      user-select: none;
+      touch-action: pan-y;
+      height: 490px;
+    }
+
+    .compare-layer {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .compare-after { z-index: 1; }
+
+    .compare-before {
+      z-index: 2;
+      clip-path: inset(0 0 0 50%);
+    }
+
+    .compare-before .compare-inner {
+      height: 100%;
+    }
+
+    .compare-handle {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      width: 4px;
+      background: var(--wa-green);
+      cursor: ew-resize;
+      box-shadow: 0 0 16px var(--wa-green-glow);
+    }
+
+    .compare-handle::after {
+      content: '◂ ▸';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 44px;
+      height: 44px;
+      background: #0d1512;
+      border: 2px solid var(--wa-green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      letter-spacing: 1px;
+      color: var(--wa-green);
+      box-shadow: 0 4px 20px var(--wa-green-glow), 0 0 0 4px rgba(37, 211, 102, 0.1);
+    }
+
+    .compare-pill {
+      position: absolute;
+      top: 14px;
+      z-index: 20;
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      backdrop-filter: blur(8px);
+      pointer-events: none;
+    }
+
+    .compare-pill-before {
+      right: 14px;
+      background: rgba(239, 68, 68, 0.18);
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      color: #f87171;
+    }
+
+    .compare-pill-after {
+      left: 14px;
+      background: rgba(37, 211, 102, 0.18);
+      border: 1px solid rgba(37, 211, 102, 0.5);
+      color: var(--wa-green);
+    }
+
+    .compare-mini-sidebar {
+      background: var(--wa-sidebar);
+      height: 100%;
+      padding: 56px 12px 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .compare-status {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border-radius: 100px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      flex-shrink: 0;
+    }
+
+    .compare-status-bad {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #f87171;
+    }
+
+    .compare-status-good {
+      background: rgba(37, 211, 102, 0.12);
+      border: 1px solid rgba(37, 211, 102, 0.4);
+      color: var(--wa-green);
+    }
+
+    .compare-mini-sidebar .wa-chat {
+      height: 68px;
+      padding: 8px 12px;
+      align-items: center;
+      flex-shrink: 0;
+      border-radius: 10px;
+      margin-bottom: 4px;
+    }
+
+    .compare-mini-sidebar .wa-avatar { width: 38px; height: 38px; font-size: 0.75rem; }
+
+    .compare-chaos .wa-chat { opacity: 0.9; }
+    .compare-chaos .wa-tag { visibility: hidden; }
+    .compare-chaos .wa-chat.missed {
+      background: rgba(239, 68, 68, 0.07);
+      border-right: 3px solid var(--accent-red);
+    }
+    .compare-chaos .wa-chat.missed .wa-chat-time { color: #f87171; font-weight: 700; }
+
+    /* FAQ */
+    .faq-list { max-width: 720px; margin: 0 auto; }
+
+    .faq-item {
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      overflow: hidden;
+      background: var(--bg-glass);
+      backdrop-filter: blur(10px);
+    }
+
+    .faq-question {
+      width: 100%;
+      padding: 20px 24px;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-align: right;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .faq-question:hover { background: rgba(255,255,255,0.02); }
+
+    .faq-icon {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      transition: transform 0.3s;
+      color: var(--wa-green);
+    }
+
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.35s ease;
+      padding: 0 24px;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .faq-item.open .faq-answer {
+      max-height: 280px;
+      padding: 0 24px 20px;
+    }
+
+    /* Install steps */
+    .install-steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 28px 0 20px;
+      position: relative;
+    }
+
+    .install-step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border-glass);
+      border-radius: 12px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .install-step-num {
+      width: 24px;
+      height: 24px;
+      background: rgba(37, 211, 102, 0.15);
+      color: var(--wa-green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .install-step svg { width: 18px; height: 18px; color: var(--wa-green); flex-shrink: 0; }
+
+    .install-arrow { color: var(--text-muted); font-size: 1.2rem; }
+
+    /* Urgency ticker */
+    .urgency-ticker {
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      position: relative;
+    }
+
+    .urgency-ticker strong { color: #fbbf24; font-weight: 700; }
+
+    /* Sticky mobile CTA */
+    .sticky-cta {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 200;
+      padding: 12px 16px;
+      padding-bottom: max(12px, env(safe-area-inset-bottom));
+      background: rgba(10, 15, 13, 0.95);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border-glass);
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+    }
+
+    .sticky-cta.visible { transform: translateY(0); }
+
+    .sticky-cta .btn-cta {
+      width: 100%;
+      justify-content: center;
+      min-height: 52px;
+      font-size: 1.1rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .step { grid-template-columns: 1fr; gap: 32px; }
+      .step:nth-child(even) { direction: rtl; }
+      .features-grid { grid-template-columns: 1fr; }
+      .feature-card.feature-ai { grid-template-columns: 1fr; }
+      .ai-layout { grid-template-columns: 1fr; gap: 32px; }
+      .audience-grid { grid-template-columns: repeat(2, 1fr); }
+      .mockup-scene .mockup-body { height: 360px; }
+      .mockup-scene .ext-panel { display: none; }
+      .mockup-scene .wa-sidebar { width: 45%; }
+    }
+
+    @media (max-width: 600px) {
+      section { padding: 64px 0; }
+      .hero { padding-top: 100px; padding-bottom: 48px; }
+      .hero h1 { font-size: clamp(2rem, 8vw, 2.8rem); margin-bottom: 16px; }
+      .hero-sub { font-size: 1rem; margin-bottom: 20px; }
+      .hero-pain { font-size: 0.9rem; padding: 10px 14px; margin-bottom: 20px; }
+      .hero-cta-wrap { margin-bottom: 32px; }
+      .hero-cta-wrap .btn-cta {
+        width: 100%;
+        justify-content: center;
+        min-height: 56px;
+        font-size: 1.15rem;
+        padding: 18px 24px;
+      }
+      .mockup-scene { display: none; }
+      .mockup-3d { transform: none !important; }
+      .step-mockup .mockup-body { height: auto !important; }
+      .step-mockup .wa-sidebar,
+      .step-mockup .ext-panel { width: 100% !important; }
+      .audience-grid { grid-template-columns: 1fr; }
+      .final-cta { padding: 48px 20px; }
+      .final-cta .btn-cta {
+        width: 100%;
+        justify-content: center;
+        min-height: 56px;
+        font-size: 1.15rem;
+      }
+      .install-steps { flex-direction: column; gap: 10px; }
+      .install-arrow { display: none; }
+      .install-step { width: 100%; justify-content: flex-start; }
+      nav .btn-cta-sm { display: none; }
+      .sticky-cta { display: block; }
+      body { padding-bottom: 80px; }
+      .compare-wrapper { height: 470px; }
+      .compare-mini-sidebar { padding: 52px 8px 8px; }
+      .compare-mini-sidebar .wa-chat { height: 64px; padding: 6px 10px; }
+      .compare-status { font-size: 0.62rem; }
+      .compare-pill { font-size: 0.75rem; padding: 5px 12px; }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .reveal { opacity: 1; transform: none; }
+      .hero h1 .word { opacity: 1; transform: none; }
+      .mockup-3d { transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="bg-dots"></div>
+
+  <nav>
+    <div class="container nav-inner">
+      <div class="logo">
+        <div class="logo-icon">WA</div>
+        WA Lead Helper
+      </div>
+      <a href="https://chromewebstore.google.com/detail/wa-lead-helper/gecompffapaoagmbjcifdehoaangalji?hl=iw" class="btn-cta btn-cta-sm" target="_blank" rel="noopener noreferrer" data-track="cta_click" data-track-location="nav">התקן בחינם</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        חדש: תשובות AI חכמות · חינם לגמרי
+      </div>
+
+      <h1 id="hero-title"></h1>
+
+      <p class="hero-sub">הלקוחה ששאלה על מחיר ביום ראשון? היא כבר קבעה אצל המתחרה. WA Lead Helper תופס כל ליד — ו-AI שמציע תשובות, עונה לשאלות, נותן טיפים ומחפש בתוך הצ'אט במקומך.</p>
+
+      <p class="hero-pain">בעל עסק ממוצע מפספס <strong>3 פניות בשבוע</strong> רק כי הן נקברו בצ'אטים — זה ₪1,500+ שאבודים בכל חודש.</p>
+
+      <div class="hero-cta-wrap">
+        <a href="https://chromewebstore.google.com/detail/wa-lead-helper/gecompffapaoagmbjcifdehoaangalji?hl=iw" class="btn-cta" target="_blank" rel="noopener noreferrer" data-track="cta_click" data-track-location="hero">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          התקן בחינם — 30 שניות
+        </a>
+        <p class="hero-note">בלי כרטיס אשראי · בלי הרשמה · הנתונים נשארים אצלך בדפדפן</p>
+        <p class="urgency-ticker" id="hero-urgency">מאז שנכנסת לדף עברו <strong id="urgency-seconds">0</strong> שניות — בזמן הזה נכנסו בממוצע <strong id="urgency-leads">0</strong> פניות לעסקים כמו שלך</p>
+      </div>
+
+      <!-- 3D Mockup -->
+      <div class="mockup-scene" id="mockup-scene">
+        <div class="mockup-3d" id="mockup-3d">
+          <div class="mockup-frame" style="position:relative">
+            <div class="mockup-dots"><span></span><span></span><span></span></div>
+            <div class="mockup-body">
+              <!-- Sidebar -->
+              <div class="wa-sidebar">
+                <div class="wa-sidebar-header">
+                  <div class="wa-search">חיפוש או התחלת צ'אט חדש</div>
+                </div>
+                <div class="wa-filters">
+                  <span class="wa-filter active">הכל</span>
+                  <span class="wa-filter">לא נקראו</span>
+                  <span class="wa-filter">מועדפים</span>
+                </div>
+                <div class="wa-chats" id="hero-chats">
+                  <div class="wa-chat" data-chat="michal">
+                    <div class="wa-avatar" style="background:#e91e63">מ</div>
+                    <div class="wa-chat-info">
+                      <div class="wa-chat-top">
+                        <span class="wa-chat-name">מיכל - קוסמטיקה</span>
+                        <span class="wa-chat-time">14:32</span>
+                      </div>
+                      <div class="wa-chat-preview">שלום, ראיתי את העבודות שלך...</div>
+                      <span class="wa-tag wa-tag-new" id="hero-tag">ליד חדש</span>
+                    </div>
+                  </div>
+                  <div class="wa-chat">
+                    <div class="wa-avatar" style="background:#ff9800">י</div>
+                    <div class="wa-chat-info">
+                      <div class="wa-chat-top">
+                        <span class="wa-chat-name">יוסי הובלות</span>
+                        <span class="wa-chat-time">אתמול</span>
+                      </div>
+                      <div class="wa-chat-preview">תודה, נדבר מחר</div>
+                      <span class="wa-tag wa-tag-progress">בטיפול</span>
+                    </div>
+                  </div>
+                  <div class="wa-chat">
+                    <div class="wa-avatar" style="background:#9c27b0">ד</div>
+                    <div class="wa-chat-info">
+                      <div class="wa-chat-top">
+                        <span class="wa-chat-name">דנה - מאמנת כושר</span>
+                        <span class="wa-chat-time">12:05</span>
+                      </div>
+                      <div class="wa-chat-preview">מעולה, נתראה ביום ראשון</div>
+                      <span class="wa-tag wa-tag-closed">נסגר</span>
+                    </div>
+                  </div>
+                  <div class="wa-chat">
+                    <div class="wa-avatar" style="background:#2196f3">ר</div>
+                    <div class="wa-chat-info">
+                      <div class="wa-chat-top">
+                        <span class="wa-chat-name">רונית - מספרה</span>
+                        <span class="wa-chat-time">11:48</span>
+                      </div>
+                      <div class="wa-chat-preview">אפשר לקבוע לי תור?</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Chat -->
+              <div class="wa-main">
+                <div class="wa-main-header">
+                  <div class="wa-avatar" style="background:#e91e63;width:36px;height:36px;font-size:0.75rem">מ</div>
+                  <span class="wa-chat-name">מיכל - קוסמטיקה</span>
+                </div>
+                <div class="wa-messages" id="hero-messages">
+                  <div class="wa-bubble in">
+                    שלום! ראיתי את העבודות שלך באינסטagram, ממש יפה 🌸
+                    <div class="wa-bubble-time">14:30</div>
+                  </div>
+                  <div class="wa-bubble out">
+                    היי מיכל! תודה רבה 😊 מה מעניין אותך?
+                    <div class="wa-bubble-time">14:31</div>
+                  </div>
+                  <div class="wa-bubble in">
+                    מחפשת טיפול פנים + איפור לאירוע
+                    <div class="wa-bubble-time">14:32</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Extension -->
+              <div class="ext-panel">
+                <div class="ext-header">
+                  <div class="ext-title-row">
+                    <div class="ext-brand">
+                      <div class="ext-brand-icon">WA</div>
+                      WA Lead Helper
+                    </div>
+                    <span class="ext-close">✕</span>
+                  </div>
+                  <div class="ext-context">מיכל - קוסמטיקה</div>
+                </div>
+                <div class="ext-tabs">
+                  <div class="ext-tab">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    הערות
+                  </div>
+                  <div class="ext-tab active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                    תגיות
+                  </div>
+                  <div class="ext-tab">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                    תשובות
+                  </div>
+                  <div class="ext-tab">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    תזכורות
+                  </div>
+                </div>
+                <div class="ext-content">
+                  <div class="ext-section-title">תגיות</div>
+                  <div class="ext-tags" id="hero-ext-tags">
+                    <span class="ext-tag ext-tag-red">🔥 ליד חם</span>
+                    <span class="ext-tag ext-tag-orange">📞 צריך מעקב</span>
+                    <span class="ext-tag ext-tag-green">✅ לקוח פעיל</span>
+                  </div>
+                  <button class="ext-add-btn">+ הוסף תגית</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Before / After -->
+  <section id="before-after" class="compare-section">
+    <div class="container">
+      <div class="reveal text-center">
+        <span class="section-label">לפני / אחרי</span>
+        <h2 class="section-title">"מי ביקש תור? לא זוכר. מי שאל על מחיר? גם לא."</h2>
+        <p class="section-desc">גרור את הידית וראה את ההבדל — אותו וואטסאפ, אותם לקוחות. פעם בלי WA Lead Helper, ופעם איתו.</p>
+      </div>
+
+      <div class="compare-wrapper reveal" id="compare-wrapper">
+        <span class="compare-pill compare-pill-before">לפני 😩</span>
+        <span class="compare-pill compare-pill-after">אחרי ✓</span>
+
+        <!-- After (organized) - full width background -->
+        <div class="compare-layer compare-after">
+          <div class="compare-mini-sidebar">
+            <div class="compare-status compare-status-good">✓ 0 לידים לא נענו — הכל תחת שליטה</div>
+            <div class="wa-chats">
+              <div class="wa-chat active">
+                <div class="wa-avatar" style="background:#e91e63">מ</div>
+                <div class="wa-chat-info">
+                  <div class="wa-chat-top"><span class="wa-chat-name">מיכל - קוסמטיקה</span><span class="wa-chat-time">14:32</span></div>
+                  <div class="wa-chat-preview">כמה עולה טיפול פנים?</div>
+                  <span class="wa-tag wa-tag-hot">🔥 ליד חם</span>
+                </div>
+              </div>
+              <div class="wa-chat">
+                <div class="wa-avatar" style="background:#2196f3">ר</div>
+                <div class="wa-chat-info">
+                  <div class="wa-chat-top"><span class="wa-chat-name">רונית - מספרה</span><span class="wa-chat-time">11:48</span></div>
+                  <div class="wa-chat-preview">אפשר לקבוע תור?</div>
+                  <span class="wa-tag wa-tag-new">ליד חדש</span>
+                </div>
+              </div>
+              <div class="wa-chat">
+                <div class="wa-avatar" style="background:#ff9800">י</div>
+                <div class="wa-chat-info">
+                  <div class="wa-chat-top"><span class="wa-chat-name">יוסי הובלות</span><span class="wa-chat-time">אתמול</span></div>
+                  <div class="wa-chat-preview">תודה, נדבר מחר</div>
+                  <span class="wa-tag wa-tag-progress">בטיפול</span>
+                </div>
+              </div>
+              <div class="wa-chat">
+                <div class="wa-avatar" style="background:#4caf50">א</div>
+                <div class="wa-chat-info">
+                  <div class="wa-chat-top"><span class="wa-chat-name">אבי - שיפוצים</span><span class="wa-chat-time">08:15</span></div>
+                  <div class="wa-chat-preview">יש לך זמינות השבוע?</div>
+                  <span class="wa-tag wa-tag-progress">📞 צריך מעקב</span>
+                </div>
+              </div>
+              <div class="wa-chat">
+                <div class="wa-avatar" style="background:#9c27b0">ד</div>
+                <div class="wa-chat-info">
+                  <div class="wa-chat-top"><span class="wa-chat-name">דנה - מאמנת כושר</span><span class="wa-chat-time">12:05</span></div>
+                  <div class="wa-chat-preview">מעולה, נתראה ביום ראשון</div>
+                  <span class="wa-tag wa-tag-closed">נסגר ✓</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Before (chaos) - same rows, no tags, clipped overlay -->
+        <div class="compare-layer compare-before" id="compare-before">
+          <div class="compare-inner">
+            <div class="compare-mini-sidebar compare-chaos">
+              <div class="compare-status compare-status-bad">⚠ 3 פניות בלי מענה — ואף אחד לא זוכר</div>
+              <div class="wa-chats">
+                <div class="wa-chat missed">
+                  <div class="wa-avatar" style="background:#e91e63">מ</div>
+                  <div class="wa-chat-info">
+                    <div class="wa-chat-top"><span class="wa-chat-name">מיכל - קוסמטיקה</span><span class="wa-chat-time">14:32</span></div>
+                    <div class="wa-chat-preview">כמה עולה טיפול פנים?</div>
+                    <span class="wa-tag wa-tag-new">x</span>
+                  </div>
+                </div>
+                <div class="wa-chat missed">
+                  <div class="wa-avatar" style="background:#2196f3">ר</div>
+                  <div class="wa-chat-info">
+                    <div class="wa-chat-top"><span class="wa-chat-name">רונית - מספרה</span><span class="wa-chat-time">11:48</span></div>
+                    <div class="wa-chat-preview">אפשר לקבוע תור?</div>
+                    <span class="wa-tag wa-tag-new">x</span>
+                  </div>
+                </div>
+                <div class="wa-chat">
+                  <div class="wa-avatar" style="background:#ff9800">י</div>
+                  <div class="wa-chat-info">
+                    <div class="wa-chat-top"><span class="wa-chat-name">יוסי הובלות</span><span class="wa-chat-time">אתמול</span></div>
+                    <div class="wa-chat-preview">תודה, נדבר מחר</div>
+                    <span class="wa-tag wa-tag-new">x</span>
+                  </div>
+                </div>
+                <div class="wa-chat missed">
+                  <div class="wa-avatar" style="background:#4caf50">א</div>
+                  <div class="wa-chat-info">
+                    <div class="wa-chat-top"><span class="wa-chat-name">אבי - שיפוצים</span><span class="wa-chat-time">08:15</span></div>
+                    <div class="wa-chat-preview">יש לך זמינות השבוע?</div>
+                    <span class="wa-tag wa-tag-new">x</span>
+                  </div>
+                </div>
+                <div class="wa-chat">
+                  <div class="wa-avatar" style="background:#9c27b0">ד</div>
+                  <div class="wa-chat-info">
+                    <div class="wa-chat-top"><span class="wa-chat-name">דנה - מאמנת כושר</span><span class="wa-chat-time">12:05</span></div>
+                    <div class="wa-chat-preview">מעולה, נתראה ביום ראשון</div>
+                    <span class="wa-tag wa-tag-new">x</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="compare-handle" id="compare-handle"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 30s product video placeholder -->
+  <section id="video" class="video-section">
+    <div class="container">
+      <div class="reveal text-center">
+        <span class="section-label">סרטון קצר</span>
+        <h2 class="section-title">רואים את התוסף בפעולה ב־30 שניות</h2>
+        <p class="section-desc">הכניסו כאן סרטון הדגמה (Loom / YouTube / MP4). בינתיים מוצג מציין מקום.</p>
+      </div>
+      <div class="video-placeholder reveal" role="img" aria-label="מציין מקום לסרטון הדגמה של 30 שניות">
+        <div class="video-placeholder-inner">
+          <div class="video-play" aria-hidden="true">▶</div>
+          <p class="video-placeholder-title">סרטון הדגמה — 30 שניות</p>
+          <p class="video-placeholder-hint">
+            להחלפה: העלו קובץ <code>demo-30s.mp4</code> לתיקייה זו, או הדביקו iframe של YouTube/Loom במקום הבלוק הזה.
+          </p>
+          <!--
+            דוגמה להחלפה בוידאו אמיתי:
+            <video controls playsinline poster="demo-poster.jpg" style="width:100%;border-radius:16px">
+              <source src="demo-30s.mp4" type="video/mp4" />
+            </video>
+            או:
+            <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="WA Lead Helper demo" allowfullscreen></iframe>
+          -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section id="how">
+    <div class="container">
+      <div class="reveal text-center">
+        <span class="section-label">איך זה עובד</span>
+        <h2 class="section-title">"שוב פספסתי ליד כי שכחתי לחזור"</h2>
+        <p class="section-desc">שלושה דברים שכל בעל עסק מפספס — ושהתוסף פותר בלי שתצטרך לעזוב את וואטסאפ.</p>
+      </div>
+
+      <div class="steps">
+        <!-- Step 1: Tagging -->
+        <div class="step reveal">
+          <div class="step-text">
+            <div class="step-number">1</div>
+            <h3>"מי זה היה? ליד חדש או לקוח קיים?"</h3>
+            <p>לחיצה אחת ויש לך תגית. מחר כשתפתח וואטסאפ — תדע מיד שמיכל שאלה על מחיר, שיוסי בטיפול, ושדנה כבר סגרה. בלי Excel, בלי לחפש בהיסטוריה.</p>
+          </div>
+          <div class="step-mockup">
+            <div class="mockup-frame">
+              <div class="mockup-body" style="height:320px">
+                <div class="wa-sidebar" style="width:100%">
+                  <div class="wa-sidebar-header"><div class="wa-search">חיפוש צ'אט...</div></div>
+                  <div class="wa-filters">
+                    <span class="wa-filter active">הכל</span>
+                    <span class="wa-filter">לא נקראו</span>
+                  </div>
+                  <div class="wa-chats">
+                    <div class="wa-chat active">
+                      <div class="wa-avatar" style="background:#e91e63">מ</div>
+                      <div class="wa-chat-info">
+                        <div class="wa-chat-top"><span class="wa-chat-name">מיכל - קוסמטיקה</span><span class="wa-chat-time">14:32</span></div>
+                        <div class="wa-chat-preview">שלום, ראיתי את העבודות שלך...</div>
+                        <span class="wa-tag wa-tag-new">ליד חדש</span>
+                      </div>
+                    </div>
+                    <div class="wa-chat">
+                      <div class="wa-avatar" style="background:#ff9800">י</div>
+                      <div class="wa-chat-info">
+                        <div class="wa-chat-top"><span class="wa-chat-name">יוסי הובלות</span><span class="wa-chat-time">אתמול</span></div>
+                        <div class="wa-chat-preview">תודה, נדבר מחר</div>
+                        <span class="wa-tag wa-tag-progress">בטיפול</span>
+                      </div>
+                    </div>
+                    <div class="wa-chat">
+                      <div class="wa-avatar" style="background:#9c27b0">ד</div>
+                      <div class="wa-chat-info">
+                        <div class="wa-chat-top"><span class="wa-chat-name">דנה - מאמנת כושר</span><span class="wa-chat-time">12:05</span></div>
+                        <div class="wa-chat-preview">מעולה, נתראה ביום ראשון</div>
+                        <span class="wa-tag wa-tag-closed">נסגר ✓</span>
+                      </div>
+                    </div>
+                    <div class="wa-chat">
+                      <div class="wa-avatar" style="background:#607d8b">ש</div>
+                      <div class="wa-chat-info">
+                        <div class="wa-chat-top"><span class="wa-chat-name">שירה - עיצוב שיער</span><span class="wa-chat-time">10:15</span></div>
+                        <div class="wa-chat-preview">כמה עולה תספורת?</div>
+                        <span class="wa-tag wa-tag-new">ליד חדש</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Unanswered tracking -->
+        <div class="step reveal">
+          <div class="step-text">
+            <div class="step-number">2</div>
+            <h3>"רונית שאלה על תור לפני יומיים — ושכחתי"</h3>
+            <p>באדג' אדום שצועק כמה לידים מחכים יותר מ-24 שעות. כל שיחה שלא נענתה מודגשת — כדי שלא תגלה ביום רביעי שהלקוחה כבר קבעה אצל מישהו אחר.</p>
+            <div class="alert-badge">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              3 לידים לא נענו 24 שעות
+            </div>
+          </div>
+          <div class="step-mockup">
+            <div class="mockup-frame">
+              <div class="mockup-body" style="height:320px">
+                <div class="wa-sidebar" style="width:100%">
+                  <div class="wa-sidebar-header">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                      <div class="wa-search" style="flex:1;margin-left:8px">חיפוש צ'אט...</div>
+                    </div>
+                    <div class="alert-badge" style="font-size:0.7rem;padding:5px 12px;margin:0;width:100%;justify-content:center">
+                      ⚠ 3 לידים לא נענו 24 שעות
+                    </div>
+                  </div>
+                  <div class="wa-chats">
+                    <div class="wa-chat stale unread">
+                      <div class="wa-avatar" style="background:#2196f3">ר</div>
+                      <div class="wa-chat-info">
+                        <div class="wa-chat-top"><span class="wa-chat-name">רונית - מספרה</span><span class="wa-chat-time">26 שעות</span></div>
+                        <div class="wa-chat-preview">אפשר לקבוע לי תור?</div>
+                        <span class="wa-tag wa-tag-hot">🔥 ליד חם</span>
+                      </div>
+                    </div>
+                    <div class="wa-chat stale unread">
+                      <div class="wa-avatar" style="background:#4caf50">א</div>
+                      <div class="wa-chat-info">
+                        <div class="wa-chat-top"><span class="wa-chat-name">אבי - שיפוצים</span><span class="wa-chat-time">31 שעות</span></div>
+                        <div class="wa-chat-preview">יש לך זמינות השבוע?</div>
+                      </div>
+                    </div>
+                    <div class="wa-chat stale">
+                      <div class="wa-avatar" style="background:#ff5722">נ</div>
+                      <div class="wa-chat-info">
+                        <div class="wa-chat-top"><span class="wa-chat-name">נועה - צילום</span><span class="wa-chat-time">48 שעות</span></div>
+                        <div class="wa-chat-preview">שלום, מחפשת צלמת ל...</div>
+                      </div>
+                    </div>
+                    <div class="wa-chat">
+                      <div class="wa-avatar" style="background:#e91e63">מ</div>
+                      <div class="wa-chat-info">
+                        <div class="wa-chat-top"><span class="wa-chat-name">מיכל - קוסמטיקה</span><span class="wa-chat-time">14:32</span></div>
+                        <div class="wa-chat-preview">מחפשת טיפול פנים + איפור</div>
+                        <span class="wa-tag wa-tag-progress">בטיפול</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Follow-up reminders -->
+        <div class="step reveal">
+          <div class="step-text">
+            <div class="step-number">3</div>
+            <h3>"אמרתי לעצמי שאחזור אליו מחר — ולא חזרתי"</h3>
+            <p>קבע תזכורת לכל ליד: "חזור ליוסי מחר ב-10:00". התוסף יזכיר לך בדיוק בזמן — ישירות בתוך וואטסאפ, בלי אפליקציה נפרדת שתשכח לפתוח.</p>
+          </div>
+          <div class="step-mockup">
+            <div class="mockup-frame">
+              <div class="mockup-body" style="height:320px">
+                <div class="ext-panel" style="width:100%;border-right:none">
+                  <div class="ext-header">
+                    <div class="ext-title-row">
+                      <div class="ext-brand">
+                        <div class="ext-brand-icon">WA</div>
+                        WA Lead Helper
+                      </div>
+                      <span class="ext-close">✕</span>
+                    </div>
+                    <div class="ext-context">יוסי הובלות</div>
+                  </div>
+                  <div class="ext-tabs">
+                    <div class="ext-tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>הערות</div>
+                    <div class="ext-tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>תגיות</div>
+                    <div class="ext-tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>תשובות</div>
+                    <div class="ext-tab active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>תזכורות</div>
+                  </div>
+                  <div class="ext-content">
+                    <div class="ext-section-title">תזכורות</div>
+                    <div class="reminder-item">
+                      <div class="reminder-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      </div>
+                      <div class="reminder-text">
+                        <strong>חזור ליוסי — הצעת מחיר</strong>
+                        <span>מחר, 10:00</span>
+                      </div>
+                      <span class="reminder-time">מחר</span>
+                    </div>
+                    <div class="reminder-item">
+                      <div class="reminder-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      </div>
+                      <div class="reminder-text">
+                        <strong>פולואפ עם רונית — תור</strong>
+                        <span>יום ראשון, 09:00</span>
+                      </div>
+                      <span class="reminder-time">3 ימים</span>
+                    </div>
+                    <div class="reminder-item">
+                      <div class="reminder-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      </div>
+                      <div class="reminder-text">
+                        <strong>שלח הצעת מחיר למיכל</strong>
+                        <span>היום, 16:00</span>
+                      </div>
+                      <span class="reminder-time" style="color:#f87171">בעוד שעה</span>
+                    </div>
+                    <button class="ext-add-btn">+ הוסף תזכורת</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Smart Reply -->
+  <section id="ai">
+    <div class="container">
+      <div class="ai-layout reveal">
+        <div>
+          <span class="section-label">פיצ'ר חדש · AI</span>
+          <h2 class="section-title">"מה אני אמור לכתוב לה עכשיו?"</h2>
+          <p class="section-desc" style="margin-bottom:0">התוסף קורא את כל ההודעות בצ'אט — ומודל AI חכם עוזר לך לענות, לשאול, לקבל טיפים ולמצוא דברים בשיחה. בלי לשבור את הראש.</p>
+          <ul class="ai-points">
+            <li>
+              <span class="ai-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span><strong>תשובה מומלצת</strong> — מנסח בשבילך תשובה בעברית לפי כל ההקשר של השיחה. לחיצה אחת ושולחים.</span>
+            </li>
+            <li>
+              <span class="ai-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span><strong>שאל את ה-AI</strong> — "מה היא ביקשה?", "האם דיברנו על מחיר?" — מקבל תשובה מיידית לפי הצ'אט.</span>
+            </li>
+            <li>
+              <span class="ai-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span><strong>טיפים לסגירה</strong> — מה לשאול בהמשך, איך להזיז ליד חם, ומתי כדאי לעשות פולואפ.</span>
+            </li>
+            <li>
+              <span class="ai-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span><strong>חיפוש בתוך הצ'אט</strong> — מוצא מחירים, תאריכים, כתובות והבטחות שנאמרו — בלי לגלול 200 הודעות.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="ai-mockup">
+          <div class="ai-mockup-header">
+            <div class="ai-mockup-brand">
+              <div class="ai-mockup-brand-icon">AI</div>
+              עוזר AI בצ'אט
+            </div>
+            <span class="ai-live-dot">קורא את הצ'אט</span>
+          </div>
+          <div class="ai-mockup-body">
+            <div class="ai-context">שיחה עם: מיכל - קוסמטיקה · 4 הודעות אחרונות</div>
+            <div class="ai-chat-preview" id="ai-chat-preview">
+              <div class="ai-bubble customer">שלום! ראיתי את העבודות שלך באינסטגרם, ממש יפה 🌸</div>
+              <div class="ai-bubble you">היי מיכל! תודה רבה 😊 מה מעניין אותך?</div>
+              <div class="ai-bubble customer">מחפשת טיפול פנים + איפור לאירוע ביום שישי</div>
+              <div class="ai-bubble customer">כמה זה עולה בערך?</div>
+            </div>
+            <div class="ai-modes" id="ai-modes">
+              <span class="ai-mode active" data-mode="reply">תשובה מומלצת</span>
+              <span class="ai-mode" data-mode="ask">שאל את ה-AI</span>
+              <span class="ai-mode" data-mode="tips">טיפים</span>
+              <span class="ai-mode" data-mode="search">חיפוש בצ'אט</span>
+            </div>
+            <div class="ai-suggest-label" id="ai-suggest-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 014 4v1a4 4 0 01-8 0V6a4 4 0 014-4z"/><path d="M6 10h12v2a6 6 0 01-12 0v-2z"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="16" x2="12" y2="20"/></svg>
+              <span id="ai-label-text">הצעת AI לפי השיחה</span>
+            </div>
+            <div class="ai-typing" id="ai-typing">
+              <span class="ai-typing-dots"><span></span><span></span><span></span></span>
+              <span id="ai-typing-text">מנתח את השיחה...</span>
+            </div>
+            <div class="ai-suggestion active" id="ai-suggestion">
+              <div class="ai-suggestion-text" id="ai-suggestion-text">היי מיכל! שמחה שאהבת 😊 טיפול פנים + איפור לאירוע זה בערך 450–650 ₪, תלוי בסוג האיפור. יש לי פנוי ביום שישי אחה״צ — רוצה שאשריין לך?</div>
+              <div class="ai-suggestion-actions" id="ai-suggestion-actions">
+                <button class="ai-btn ai-btn-primary">העתק לשליחה</button>
+                <button class="ai-btn ai-btn-ghost">נסח מחדש</button>
+              </div>
+            </div>
+            <div class="ai-ask-row">
+              <div class="ai-ask-input" id="ai-ask-input">שאל על הצ'אט או בקש טיפ...</div>
+              <div class="ai-ask-send">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features">
+    <div class="container">
+      <div class="reveal text-center">
+        <span class="section-label">מה זה נותן לך</span>
+        <h2 class="section-title">"אני לא מצליח לעקוב אחרי כולם"</h2>
+        <p class="section-desc">חמישה דברים שכל בעל עסק קטן צריך — וש-CRM של ₪500 בחודש לא פותר.</p>
+      </div>
+
+      <div class="features-grid reveal">
+        <div class="feature-card feature-ai">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 014 4v1a4 4 0 01-8 0V6a4 4 0 014-4z"/><path d="M6 10h12v2a6 6 0 01-12 0v-2z"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="16" x2="12" y2="20"/></svg>
+          </div>
+          <div>
+            <span class="feature-ai-badge">חדש · AI</span>
+            <h3>לא תשבור את הראש — שאל, חפש, קבל תשובה</h3>
+            <p>ה-AI קורא את כל הצ'אט: מציע תשובה מוכנה, עונה לשאלות שלך, נותן טיפים לסגירה ומחפש מחירים ותאריכים בתוך השיחה — בלי לגלול.</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          </div>
+          <h3>לא תשכח מי שאל על מחיר</h3>
+          <p>כל ליד מקבל תגית: חדש, בטיפול, נסגר. פותחים וואטסאפ בבוקר — רואים מיד מי מחכה לתשובה ומי כבר סגר.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <h3>לא תגלה שלא ענית רק כשהלקוח הלך</h3>
+          <p>באדג' אדום שמראה כמה לידים מחכים יותר מ-24 שעות. לפני שהלקוחה קובעת אצל המתחרה — אתה יודע.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <h3>לא תגיד "אחזור מחר" ותשכח</h3>
+          <p>תזכורת לכל ליד — "חזור אליו ביום ראשון". התוסף מזכיר לך בזמן, בתוך וואטסאפ, בלי אפליקציה נוספת.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          </div>
+          <h3>לא תקליד את אותה תשובה 20 פעם ביום</h3>
+          <p>"שלום, תודה שפנית", "אבדוק ואחזור אליך" — שמרת פעם, שולח בלחיצה. חוסך 10 דקות בכל יום.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Audience -->
+  <section id="audience">
+    <div class="container">
+      <div class="reveal text-center">
+        <span class="section-label">למי זה מתאים</span>
+        <h2 class="section-title">"זה בדיוק מה שחסר לי בוואטסאפ"</h2>
+        <p class="section-desc">אם אתה מקבל פניות בוואטסאפ ומפסיד מכירות כי שכחת לחזור — זה בשבילך.</p>
+      </div>
+
+      <div class="audience-grid reveal">
+        <div class="audience-card">
+          <span class="audience-emoji">💄</span>
+          <h3>קוסמטיקאיות</h3>
+          <p>"שאלה על איפור לאירוע ביום שלישי — ושכחתי לחזור ביום חמישי." לא יקרה יותר.</p>
+        </div>
+        <div class="audience-card">
+          <span class="audience-emoji">✂️</span>
+          <h3>מספרות</h3>
+          <p>"3 בקשות תור בשבוע — ואני לא יודעת מי כבר קבע." עכשיו תדעי.</p>
+        </div>
+        <div class="audience-card">
+          <span class="audience-emoji">💪</span>
+          <h3>מאמנים</h3>
+          <p>"ליד חדש שרצה חבילת אימון — נקבר בין 40 צ'אטים." לא עוד.</p>
+        </div>
+        <div class="audience-card">
+          <span class="audience-emoji">🏪</span>
+          <h3>בעלי עסקים</h3>
+          <p>כל מי שמקבל לידים בוואטסאפ ורוצה לסגור יותר — בלי CRM יקר.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="container">
+      <div class="reveal text-center">
+        <span class="section-label">שאלות שעוצרות</span>
+        <h2 class="section-title">"רגע, אבל..."</h2>
+        <p class="section-desc">השאלות שכולם שואלים לפני ההתקנה — והתשובות הישירות.</p>
+      </div>
+
+      <div class="faq-list reveal">
+        <div class="faq-item">
+          <button class="faq-question" data-track="faq_open" data-track-question="ai">
+            איך עובדות תשובות ה-AI?
+            <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <div class="faq-answer">התוסף קורא את הודעות הצ'אט הפתוח. אפשר לבקש תשובה מומלצת, לשאול שאלות על השיחה, לקבל טיפים לסגירה, ולחפש דברים בתוך הצ'אט (מחיר, תאריך, הבטחה). אתה תמיד רואה את התוצאה לפני ששולחים — שום דבר לא יוצא אוטומטית.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" data-track="faq_open" data-track-question="privacy">
+            זה רואה את ההודעות שלי?
+            <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <div class="faq-answer">תגיות, הערות ותזכורות נשמרות מקומית בדפדפן שלך. כשאתה מבקש תשובת AI — רק תוכן הצ'אט הרלוונטי נשלח למודל כדי לנסח הצעה, ולא נשמר אצלנו כמאגר לקוחות.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" data-track="faq_open" data-track-question="ban">
+            וואטסאפ יכול לחסום אותי?
+            <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <div class="faq-answer">לא. התוסף לא שולח הודעות בשמך, לא מוסיף אנשים, ולא נוגע בחשבון. תשובות AI הן הצעות בלבד — רק אתה לוחץ שליחה בוואטסאפ.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" data-track="faq_open" data-track-question="free">
+            זה באמת חינם? מה הקאץ'?
+            <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <div class="faq-answer">חינם. בלי קאץ'. בלי כרטיס אשראי. בלי "14 יום ניסיון". פשוט חינם — כי אנחנו רוצים שבעלי עסקים יפסיקו לאבד לידים.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" data-track="faq_open" data-track-question="technical">
+            צריך ידע טכני?
+            <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <div class="faq-answer">לא. לוחצים "הוסף לכרום", פותחים וואטסאפ ווב — וזהו. אם אתה יודע לפתוח וואטסאפ, אתה יודע להשתמש בזה.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" data-track="faq_open" data-track-question="mobile">
+            עובד גם בטלפון?
+            <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <div class="faq-answer">התוסף עובד ב-Chrome על מחשב (וואטסאפ ווב). בטלפון — אפליקציית וואטסאפ הרגילה. רוב בעלי העסקים עובדים ממחשב בכל מקרה.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section>
+    <div class="container">
+      <div class="final-cta reveal">
+        <h2>"מספיק לידים שברחו בין הצ'אטים"</h2>
+        <p>30 שניות. חינם. בלי סיבות לא להתקין.</p>
+
+        <div class="install-steps">
+          <div class="install-step">
+            <span class="install-step-num">1</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            לחץ "הוסף לכרום"
+          </div>
+          <span class="install-arrow">←</span>
+          <div class="install-step">
+            <span class="install-step-num">2</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            פתח וואטסאפ ווב
+          </div>
+          <span class="install-arrow">←</span>
+          <div class="install-step">
+            <span class="install-step-num">3</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            זהו — מתחילים לסגור לידים
+          </div>
+        </div>
+
+        <a href="https://chromewebstore.google.com/detail/wa-lead-helper/gecompffapaoagmbjcifdehoaangalji?hl=iw" class="btn-cta" target="_blank" rel="noopener noreferrer" data-track="cta_click" data-track-location="final">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          התקן בחינם — 30 שניות
+        </a>
+        <p class="urgency-ticker" id="final-urgency">מאז שנכנסת לדף עברו <strong id="final-urgency-seconds">0</strong> שניות — בזמן הזה נכנסו בממוצע <strong id="final-urgency-leads">0</strong> פניות לעסקים כמו שלך</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="logo">
+        <div class="logo-icon">WA</div>
+        WA Lead Helper
+      </div>
+      <p>© 2026 WA Lead Helper · נבנה בישראל 🇮🇱</p>
+    </div>
+  </footer>
+
+  <!-- Sticky mobile CTA -->
+  <div class="sticky-cta" id="sticky-cta">
+    <a href="https://chromewebstore.google.com/detail/wa-lead-helper/gecompffapaoagmbjcifdehoaangalji?hl=iw" class="btn-cta" target="_blank" rel="noopener noreferrer" data-track="cta_click" data-track-location="sticky">
+      התקן בחינם — 30 שניות
+    </a>
+  </div>
+
+  <script>
+    // Analytics hooks
+    window.dataLayer = window.dataLayer || [];
+    function trackEvent(name, data) {
+      var payload = Object.assign({ event: name }, data || {});
+      window.dataLayer.push(payload);
+      if (window.console) console.log('[track]', name, payload);
+    }
+
+    document.addEventListener('click', function(e) {
+      var el = e.target.closest('[data-track]');
+      if (!el) return;
+      trackEvent(el.getAttribute('data-track'), {
+        location: el.getAttribute('data-track-location') || '',
+        question: el.getAttribute('data-track-question') || ''
+      });
+    });
+
+    // Hero word-by-word animation
+    (function() {
+      const title = 'אף ליד לא הולך לאיבוד יותר';
+      const el = document.getElementById('hero-title');
+      const words = title.split(' ');
+      words.forEach((word, i) => {
+        const span = document.createElement('span');
+        span.className = 'word';
+        span.textContent = word + (i < words.length - 1 ? '\u00A0' : '');
+        span.style.animationDelay = (0.15 * i + 0.3) + 's';
+        el.appendChild(span);
+      });
+    })();
+
+    // Mouse parallax on hero mockup
+    (function() {
+      const scene = document.getElementById('mockup-scene');
+      const mockup = document.getElementById('mockup-3d');
+      if (!scene || !mockup) return;
+
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const isMobile = window.innerWidth <= 600;
+      if (prefersReduced || isMobile) return;
+
+      scene.addEventListener('mousemove', (e) => {
+        const rect = scene.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        const rotateY = -8 + x * 6;
+        const rotateX = 2 - y * 4;
+        mockup.style.transform = `perspective(1200px) rotateY(${rotateY}deg) rotateX(${rotateX}deg)`;
+      });
+
+      scene.addEventListener('mouseleave', () => {
+        mockup.style.transform = 'perspective(1200px) rotateY(-8deg) rotateX(2deg)';
+      });
+    })();
+
+    // Live demo: incoming message + tag animation
+    (function() {
+      const messages = [
+        { text: 'כמה עולה טיפול פנים + איפור?', time: '14:33' },
+        { text: 'יש לך זמינות לשבוע הבא?', time: '14:35' },
+        { text: 'מעולה! אשמח לקבוע 🙏', time: '14:37' }
+      ];
+      let msgIndex = 0;
+      const chatPreview = document.querySelector('[data-chat="michal"] .wa-chat-preview');
+      const heroTag = document.getElementById('hero-tag');
+      const heroMessages = document.getElementById('hero-messages');
+      const michalChat = document.querySelector('[data-chat="michal"]');
+
+      const tags = [
+        { cls: 'wa-tag-new', text: 'ליד חדש' },
+        { cls: 'wa-tag-hot', text: '🔥 ליד חם' },
+        { cls: 'wa-tag-progress', text: 'בטיפול' }
+      ];
+      let tagIndex = 0;
+
+      function cycleDemo() {
+        // New message
+        const msg = messages[msgIndex % messages.length];
+        msgIndex++;
+
+        if (chatPreview) {
+          chatPreview.textContent = msg.text;
+          chatPreview.classList.add('new-msg');
+          setTimeout(() => chatPreview.classList.remove('new-msg'), 500);
+        }
+
+        if (heroMessages) {
+          const bubble = document.createElement('div');
+          bubble.className = 'wa-bubble in incoming';
+          bubble.innerHTML = msg.text + '<div class="wa-bubble-time">' + msg.time + '</div>';
+          heroMessages.appendChild(bubble);
+          if (heroMessages.children.length > 4) {
+            heroMessages.removeChild(heroMessages.firstChild);
+          }
+        }
+
+        if (michalChat) {
+          michalChat.classList.add('active', 'unread');
+          setTimeout(() => michalChat.classList.remove('unread'), 2000);
+        }
+
+        // Tag change after 1.5s
+        setTimeout(() => {
+          tagIndex = (tagIndex + 1) % tags.length;
+          const tag = tags[tagIndex];
+          if (heroTag) {
+            heroTag.className = 'wa-tag ' + tag.cls + ' tag-animate';
+            heroTag.textContent = tag.text;
+          }
+        }, 1500);
+      }
+
+      setInterval(cycleDemo, 4000);
+      setTimeout(cycleDemo, 2000);
+    })();
+
+    // AI assistant live demo (reply / ask / tips / search)
+    (function() {
+      var modes = [
+        {
+          id: 'reply',
+          label: 'הצעת AI לפי השיחה',
+          typing: 'מנסח תשובה מומלצת...',
+          ask: 'שאל על הצ\'אט או בקש טיפ...',
+          text: 'היי מיכל! שמחה שאהבת 😊 טיפול פנים + איפור לאירוע זה בערך 450–650 ₪, תלוי בסוג האיפור. יש לי פנוי ביום שישי אחה״צ — רוצה שאשריין לך?',
+          primary: 'העתק לשליחה',
+          ghost: 'נסח מחדש'
+        },
+        {
+          id: 'ask',
+          label: 'תשובה לשאלה שלך',
+          typing: 'בודק את הצ\'אט...',
+          ask: 'מה היא ביקשה בדיוק?',
+          text: 'מיכל מחפשת טיפול פנים + איפור לאירוע ביום שישי, ושאלה כמה זה עולה בערך. עדיין לא נתת מחיר ולא קבעת שעה.',
+          primary: 'המשך לשאול',
+          ghost: 'תשובה מומלצת'
+        },
+        {
+          id: 'tips',
+          label: 'טיפ לסגירת הליד',
+          typing: 'מכין טיפ לפי השיחה...',
+          ask: 'תן לי טיפ איך לסגור אותה',
+          text: 'היא כבר חמה — שאלה על מחיר ותאריך. תציע חבילה ברורה + שעה פנויה אחת ביום שישי, ותשאל "רוצה שאשריין?" כדי לדחוף לסגירה.',
+          primary: 'השתמש בטיפ',
+          ghost: 'טיפ נוסף'
+        },
+        {
+          id: 'search',
+          label: 'נמצא בצ\'אט',
+          typing: 'מחפש בתוך השיחה...',
+          ask: 'חפש מחיר או תאריך בצ\'אט',
+          text: '🔍 תאריך: יום שישי (אירוע)\n🔍 שירות: טיפול פנים + איפור\n🔍 מחיר: עדיין לא נאמר בשיחה — כדאי לשלוח הצעה עכשיו',
+          primary: 'העתק סיכום',
+          ghost: 'חפש שוב'
+        }
+      ];
+      var idx = 0;
+      var textEl = document.getElementById('ai-suggestion-text');
+      var boxEl = document.getElementById('ai-suggestion');
+      var typingEl = document.getElementById('ai-typing');
+      var typingText = document.getElementById('ai-typing-text');
+      var labelText = document.getElementById('ai-label-text');
+      var askInput = document.getElementById('ai-ask-input');
+      var modesEl = document.getElementById('ai-modes');
+      var actionsEl = document.getElementById('ai-suggestion-actions');
+      if (!textEl || !boxEl) return;
+
+      function applyMode(mode) {
+        if (labelText) labelText.textContent = mode.label;
+        if (typingText) typingText.textContent = mode.typing;
+        if (askInput) askInput.textContent = mode.ask;
+        textEl.textContent = mode.text;
+        if (actionsEl) {
+          var buttons = actionsEl.querySelectorAll('.ai-btn');
+          if (buttons[0]) buttons[0].textContent = mode.primary;
+          if (buttons[1]) buttons[1].textContent = mode.ghost;
+        }
+        if (modesEl) {
+          modesEl.querySelectorAll('.ai-mode').forEach(function(chip) {
+            chip.classList.toggle('active', chip.getAttribute('data-mode') === mode.id);
+          });
+        }
+      }
+
+      function cycleAi() {
+        if (typingEl) typingEl.classList.add('visible');
+        boxEl.style.opacity = '0.35';
+        setTimeout(function() {
+          idx = (idx + 1) % modes.length;
+          applyMode(modes[idx]);
+          if (typingEl) typingEl.classList.remove('visible');
+          boxEl.style.opacity = '1';
+          boxEl.classList.remove('active');
+          void boxEl.offsetWidth;
+          boxEl.classList.add('active');
+        }, 1200);
+      }
+
+      if (modesEl) {
+        modesEl.querySelectorAll('.ai-mode').forEach(function(chip) {
+          chip.addEventListener('click', function() {
+            var id = chip.getAttribute('data-mode');
+            var found = modes.findIndex(function(m) { return m.id === id; });
+            if (found < 0) return;
+            idx = found;
+            if (typingEl) typingEl.classList.add('visible');
+            boxEl.style.opacity = '0.35';
+            setTimeout(function() {
+              applyMode(modes[idx]);
+              if (typingEl) typingEl.classList.remove('visible');
+              boxEl.style.opacity = '1';
+              boxEl.classList.remove('active');
+              void boxEl.offsetWidth;
+              boxEl.classList.add('active');
+            }, 700);
+          });
+        });
+      }
+
+      setInterval(cycleAi, 5000);
+    })();
+
+    // Scroll reveal
+    (function() {
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const els = document.querySelectorAll('.reveal');
+
+      if (prefersReduced) {
+        els.forEach(el => el.classList.add('visible'));
+        return;
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+      els.forEach(el => observer.observe(el));
+    })();
+
+    // Before/After compare slider
+    (function() {
+      var wrapper = document.getElementById('compare-wrapper');
+      var before = document.getElementById('compare-before');
+      var handle = document.getElementById('compare-handle');
+      if (!wrapper || !before || !handle) return;
+
+      var dragging = false;
+
+      function setPosition(pct) {
+        pct = Math.max(10, Math.min(90, pct));
+        // Right of handle = "before" (chaos), left of handle = "after" (organized)
+        before.style.clipPath = 'inset(0 0 0 ' + pct + '%)';
+        handle.style.left = pct + '%';
+      }
+
+      setPosition(50);
+
+      function onMove(clientX) {
+        var rect = wrapper.getBoundingClientRect();
+        var pct = ((clientX - rect.left) / rect.width) * 100;
+        setPosition(pct);
+      }
+
+      handle.addEventListener('mousedown', function() { dragging = true; });
+      handle.addEventListener('touchstart', function(e) { dragging = true; e.preventDefault(); }, { passive: false });
+
+      window.addEventListener('mousemove', function(e) { if (dragging) onMove(e.clientX); });
+      window.addEventListener('touchmove', function(e) { if (dragging) onMove(e.touches[0].clientX); }, { passive: true });
+      window.addEventListener('mouseup', function() { dragging = false; });
+      window.addEventListener('touchend', function() { dragging = false; });
+
+      wrapper.addEventListener('click', function(e) {
+        if (e.target === handle || handle.contains(e.target)) return;
+        onMove(e.clientX);
+      });
+    })();
+
+    // FAQ accordion
+    (function() {
+      document.querySelectorAll('.faq-question').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var item = btn.closest('.faq-item');
+          var wasOpen = item.classList.contains('open');
+          document.querySelectorAll('.faq-item').forEach(function(i) { i.classList.remove('open'); });
+          if (!wasOpen) item.classList.add('open');
+        });
+      });
+    })();
+
+    // Urgency ticker (realistic: ~1 lead per 90 seconds for small businesses)
+    (function() {
+      var startTime = Date.now();
+      var secEls = [document.getElementById('urgency-seconds'), document.getElementById('final-urgency-seconds')];
+      var leadEls = [document.getElementById('urgency-leads'), document.getElementById('final-urgency-leads')];
+
+      function tick() {
+        var elapsed = Math.floor((Date.now() - startTime) / 1000);
+        var leads = Math.floor(elapsed / 90);
+        secEls.forEach(function(el) { if (el) el.textContent = elapsed; });
+        leadEls.forEach(function(el) { if (el) el.textContent = leads; });
+      }
+
+      tick();
+      setInterval(tick, 1000);
+    })();
+
+    // Scroll depth tracking (50%)
+    (function() {
+      var fired = false;
+      window.addEventListener('scroll', function() {
+        if (fired) return;
+        var scrollPct = (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight;
+        if (scrollPct >= 0.5) {
+          fired = true;
+          trackEvent('scroll_depth', { depth: '50%' });
+        }
+      }, { passive: true });
+    })();
+
+    // Sticky mobile CTA (30% scroll)
+    (function() {
+      var sticky = document.getElementById('sticky-cta');
+      if (!sticky) return;
+      var shown = false;
+
+      window.addEventListener('scroll', function() {
+        var scrollPct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+        if (scrollPct >= 0.3 && !shown) {
+          shown = true;
+          sticky.classList.add('visible');
+        } else if (scrollPct < 0.15 && shown) {
+          shown = false;
+          sticky.classList.remove('visible');
+        }
+      }, { passive: true });
+    })();
+  </script>
+</body>
+</html>

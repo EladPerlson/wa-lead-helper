@@ -5,19 +5,24 @@ interface CardProps {
   children: ReactNode;
   className?: string;
   title?: string;
+  glass?: boolean;
 }
 
-export function Card({ children, className, title }: CardProps) {
+export function Card({ children, className, title, glass = true }: CardProps) {
   return (
     <div
       className={cn(
-        'bg-notion-bg border border-notion-border rounded-xl p-4 shadow-notion',
-        'animate-fade-in',
+        'rounded-[16px] p-4 animate-fade-in',
+        glass ? 'wa-lh-glass' : 'wa-lh-surface',
         className,
       )}
       dir="rtl"
     >
-      {title && <h3 className="text-sm font-semibold text-notion-text mb-3 text-right">{title}</h3>}
+      {title && (
+        <h3 className="text-sm font-semibold text-notion-text mb-3 text-right tracking-wide">
+          {title}
+        </h3>
+      )}
       {children}
     </div>
   );

@@ -31,8 +31,11 @@ export function ContactPanelGate({
 }: ContactPanelGateProps) {
   if (!detectedContact) {
     return (
-      <div className="p-4 text-sm text-notion-muted text-right" dir="rtl">
-        {emptyMessage}
+      <div className="p-6 flex flex-col items-center justify-center text-center gap-3 min-h-[200px]" dir="rtl">
+        <div className="w-14 h-14 rounded-3xl bg-notion-soft text-notion-accent flex items-center justify-center text-2xl wa-lh-glow-ring">
+          💬
+        </div>
+        <p className="text-sm text-notion-muted leading-relaxed max-w-[220px]">{emptyMessage}</p>
       </div>
     );
   }

@@ -16,7 +16,8 @@ export const STORAGE_KEYS = {
 } as const;
 
 export const DEFAULT_SETTINGS: Settings = {
-  darkMode: false,
+  darkMode: true,
+  showChatAiOffer: true,
 };
 
 export const DEFAULT_TAGS: Tag[] = [
@@ -167,6 +168,7 @@ export async function createEmptyContact(
     displayName,
     notes: '',
     tags: [],
+    status: 'new',
     createdAt: new Date().toISOString(),
     reminders: [],
     templatesUsed: 0,

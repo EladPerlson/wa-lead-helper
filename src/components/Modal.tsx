@@ -26,9 +26,10 @@ export function Modal({
 
   return (
     <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4" dir="rtl">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onCancel} />
-      <div className="relative bg-notion-bg border border-notion-border rounded-2xl p-5 shadow-notion-lg max-w-sm w-full animate-slide-in">
-        <h3 className="text-base font-semibold text-notion-text mb-2 text-right">{title}</h3>
+      <div className="absolute inset-0 bg-brand-ink/70 backdrop-blur-sm" onClick={onCancel} />
+      <div className="relative wa-lh-glass rounded-[20px] p-5 shadow-notion-lg max-w-sm w-full animate-rise overflow-hidden">
+        <div className="absolute top-0 inset-x-0 h-0.5 wa-lh-accent-gradient" />
+        <h3 className="text-base font-bold text-notion-text mb-2 text-right">{title}</h3>
         <p className="text-sm text-notion-muted mb-5 text-right leading-relaxed">{message}</p>
         <div className="flex gap-2 justify-start">
           <Button variant={variant === 'danger' ? 'danger' : 'primary'} onClick={onConfirm}>

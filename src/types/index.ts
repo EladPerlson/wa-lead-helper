@@ -8,11 +8,16 @@ export interface Reminder {
   phoneNumber: string;
 }
 
+/** Explicit lead pipeline status (in addition to free-form tags). */
+export type LeadStatus = 'new' | 'following' | 'closed';
+
 export interface ContactData {
   phoneNumber: string;
   displayName?: string;
   notes: string;
   tags: string[];
+  /** Pipeline status — defaults to 'new' when missing (legacy contacts). */
+  status?: LeadStatus;
   createdAt: string;
   reminders: Reminder[];
   templatesUsed: number;
@@ -33,9 +38,19 @@ export interface Template {
 
 export interface Settings {
   darkMode: boolean;
+  /** Show floating "reply with AI?" offer above the chat composer */
+  showChatAiOffer?: boolean;
   reminderNotificationsDate?: string;
   reminderNotificationsCount?: number;
   cachedPlan?: 'free' | 'pro' | 'unlimited';
+  /** First-time onboarding wizard completed */
+  onboardingDone?: boolean;
+  /** Last automatic local backup ISO timestamp */
+  lastBackupAt?: string;
+  /** Push/pull contacts to Supabase when signed in */
+  cloudSyncEnabled?: boolean;
+  /** Optional Sentry DSN — errors only captured when set */
+  sentryDsn?: string;
 }
 
 export interface StorageSchema {
@@ -45,7 +60,14 @@ export interface StorageSchema {
   settings: Settings;
 }
 
-export type TabId = 'notes' | 'tags' | 'replies' | 'reminders' | 'history' | 'customers' | 'settings' | 'admin';
+export type TabId =
+  | 'notes'
+  | 'tags'
+  | 'replies'
+  | 'history'
+  | 'customers'
+  | 'settings'
+  | 'admin';
 
 export interface DetectedContact {
   phoneNumber: string;

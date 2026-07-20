@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
-import { PLANS, formatLimit, formatPlanPrice } from '@/plans';
+import { PLANS, formatLimit, formatPlanPrice, isUnlimited } from '@/plans';
 import type { PlanId } from '@/plans';
 import { PRICING_URL } from '@/constants/urls';
 import { he } from '@/i18n/he';
@@ -53,6 +53,14 @@ export function PricingPanel({ subscription, userEmail }: PricingPanelProps) {
           <p className="text-xs text-notion-muted">
             {he.pricing.usageReplies}: {templates.length}/{formatLimit(limits.templates)}
           </p>
+          <p className="text-xs text-notion-muted">
+            {he.pricing.usageAi}:{' '}
+            {isUnlimited(limits.aiSuggestions)
+              ? he.pricing.unlimitedPlan
+              : subscription.aiUsage
+                ? `${subscription.aiUsage.used}/${formatLimit(subscription.aiUsage.limit ?? limits.aiSuggestions)}`
+                : `—/${formatLimit(limits.aiSuggestions)}`}
+          </p>
         </div>
       </Card>
 
@@ -74,8 +82,7 @@ export function PricingPanel({ subscription, userEmail }: PricingPanelProps) {
                     <p className="text-xs text-notion-muted">
                       {formatPlanPrice(PLANS[id].priceNis)}/{he.pricing.perMonth} ·{' '}
                       {formatLimit(PLANS[id].limits.taggedCustomers)} {he.pricing.tagsLabel} ·{' '}
-                      {formatLimit(PLANS[id].limits.remindersPerDay)} {he.pricing.remindersLabel} ·{' '}
-                      {formatLimit(PLANS[id].limits.templates)} {he.pricing.repliesLabel}
+                      {formatLimit(PLANS[id].limits.aiSuggestions)} {he.pricing.aiLabel}
                     </p>
                   </div>
                 </div>

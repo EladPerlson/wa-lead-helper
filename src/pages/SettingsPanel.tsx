@@ -10,6 +10,9 @@ import { useSettings } from '@/hooks/useSettings';
 import type { AuthState } from '@/hooks/useAuth';
 import type { SubscriptionState } from '@/hooks/useSubscription';
 import { PricingPanel } from '@/components/PricingPanel';
+import { createLocalBackup, hasLocalBackup, restoreLocalBackup } from '@/utils/backup';
+import { syncContactsWithCloud } from '@/utils/cloudSync';
+import { formatDateHe } from '@/utils/date';
 
 interface SettingsPanelProps {
   auth?: AuthState;
@@ -21,6 +24,7 @@ interface SettingsPanelProps {
 export function SettingsPanel({ auth, subscription, onToast, onThemeChange }: SettingsPanelProps) {
   const { settings, updateSettings } = useSettings();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDarkMode = async (checked: boolean) => {
@@ -67,9 +71,45 @@ export function SettingsPanel({ auth, subscription, onToast, onThemeChange }: Se
     onToast(he.settings.deleted, 'success');
   };
 
+  const handleCloudSync = async () => {
+    if (!auth?.session) return;
+    setSyncing(true);
+    try {
+      await syncContactsWithCloud();
+      onToast(he.settings.cloudSyncSuccess, 'success');
+    } catch {
+      onToast(he.settings.cloudSyncError, 'error');
+    } finally {
+      setSyncing(false);
+    }
+  };
+
+  const handleBackupNow = async () => {
+    try {
+      await createLocalBackup();
+      onToast(he.settings.backupSuccess, 'success');
+    } catch {
+      onToast(he.common.error, 'error');
+    }
+  };
+
+  const handleRestoreBackup = async () => {
+    const ok = await hasLocalBackup();
+    if (!ok) {
+      onToast(he.settings.restoreEmpty, 'error');
+      return;
+    }
+    try {
+      const restored = await restoreLocalBackup();
+      onToast(restored ? he.settings.restoreSuccess : he.settings.restoreEmpty, restored ? 'success' : 'error');
+    } catch {
+      onToast(he.common.error, 'error');
+    }
+  };
+
   return (
-    <div className="p-4 space-y-4 animate-fade-in" dir="rtl">
-      <h3 className="text-sm font-semibold text-notion-text text-right">{he.settings.title}</h3>
+    <div className="p-4 space-y-4 animate-rise" dir="rtl">
+      <h3 className="text-base font-bold text-notion-text text-right">{he.settings.title}</h3>
 
       {auth?.session && subscription && (
         <PricingPanel
@@ -91,12 +131,64 @@ export function SettingsPanel({ auth, subscription, onToast, onThemeChange }: Se
         </Card>
       )}
 
-      <Card>
+      <Card className="space-y-3">
         <Switch
           label={he.settings.darkMode}
           checked={settings.darkMode}
           onChange={handleDarkMode}
         />
+        <Switch
+          label={he.settings.showChatAiOffer}
+          checked={settings.showChatAiOffer !== false}
+          onChange={(checked) => void updateSettings({ showChatAiOffer: checked })}
+        />
+        <p className="text-xs text-notion-muted text-right -mt-1">
+          {he.settings.showChatAiOfferHint}
+        </p>
+      </Card>
+
+      {auth?.session && (
+        <Card title={he.settings.cloudSync}>
+          <div className="space-y-3">
+            <Switch
+              label={he.settings.cloudSync}
+              checked={settings.cloudSyncEnabled === true}
+              onChange={(checked) => void updateSettings({ cloudSyncEnabled: checked })}
+            />
+            <p className="text-xs text-notion-muted text-right">{he.settings.cloudSyncHint}</p>
+            <Button
+              variant="secondary"
+              className="w-full"
+              disabled={syncing || !settings.cloudSyncEnabled}
+              onClick={() => void handleCloudSync()}
+            >
+              {syncing ? he.common.loading : he.settings.cloudSyncNow}
+            </Button>
+          </div>
+        </Card>
+      )}
+
+      <Card title={he.settings.autoBackup}>
+        <div className="space-y-3">
+          <p className="text-xs text-notion-muted text-right">{he.settings.autoBackupHint}</p>
+          {settings.lastBackupAt && (
+            <p className="text-xs text-notion-muted text-right">
+              {he.settings.lastBackup}: {formatDateHe(settings.lastBackupAt)}
+            </p>
+          )}
+          <Button variant="secondary" className="w-full" onClick={() => void handleBackupNow()}>
+            {he.settings.backupNow}
+          </Button>
+          <Button variant="ghost" className="w-full" onClick={() => void handleRestoreBackup()}>
+            {he.settings.restoreBackup}
+          </Button>
+        </div>
+      </Card>
+
+      <Card title={he.settings.shortcuts}>
+        <p className="text-xs text-notion-muted text-right leading-relaxed">
+          {he.settings.shortcutsBody}
+        </p>
       </Card>
 
       <Card className="space-y-3">

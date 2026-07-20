@@ -102,18 +102,18 @@ export function AuthScreen({ auth }: AuthScreenProps) {
           : he.auth.sendResetLink;
 
   return (
-    <div className="p-4 space-y-4 animate-fade-in" dir="rtl">
-      <div className="text-center pt-6 pb-2">
-        <div className="w-14 h-14 mx-auto rounded-2xl bg-notion-accent text-white flex items-center justify-center font-bold text-lg mb-3">
+    <div className="p-4 space-y-3 animate-rise" dir="rtl">
+      <div className="text-center pt-2 pb-1">
+        <div className="w-12 h-12 mx-auto rounded-[14px] wa-lh-accent-gradient text-brand-mist flex items-center justify-center font-bold text-lg mb-2 wa-lh-brand shadow-[0_8px_20px_rgba(0,173,181,0.3)]">
           WA
         </div>
-        <h2 className="text-lg font-bold text-notion-text">{getTitle(mode)}</h2>
-        <p className="text-xs text-notion-muted mt-1">
+        <h2 className="text-base font-bold text-notion-text">{getTitle(mode)}</h2>
+        <p className="text-[11px] text-notion-muted mt-1 max-w-[260px] mx-auto leading-relaxed">
           {mode === 'forgot' ? he.auth.forgotPasswordHint : he.auth.loginRequired}
         </p>
       </div>
 
-      <Card>
+      <Card glass={false} className="wa-lh-glow-ring">
         <form onSubmit={handleSubmit} className="space-y-3">
           <Input
             label={he.auth.email}
@@ -142,8 +142,8 @@ export function AuthScreen({ auth }: AuthScreenProps) {
             />
           )}
 
-          {error && <p className="text-xs text-red-500 text-right">{error}</p>}
-          {info && <p className="text-xs text-green-600 text-right">{info}</p>}
+          {error && <p className="text-xs text-notion-danger text-right">{error}</p>}
+          {info && <p className="text-xs text-notion-success text-right">{info}</p>}
 
           <Button type="submit" className="w-full" disabled={submitting}>
             {submitLabel}

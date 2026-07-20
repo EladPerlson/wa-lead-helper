@@ -8,32 +8,37 @@ interface BadgeProps {
   onClick?: () => void;
   onRemove?: () => void;
   className?: string;
+  count?: number;
 }
 
 export function Badge({
   label,
-  color = '#6b7280',
+  color = '#00ADB5',
   emoji,
   active = false,
   onClick,
   onRemove,
   className,
+  count,
 }: BadgeProps) {
   const isInteractive = Boolean(onClick);
 
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full',
+        'inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-2xl',
         'transition-all duration-200 border',
-        isInteractive && 'cursor-pointer hover:scale-105',
-        active ? 'ring-2 ring-offset-1 ring-current' : 'opacity-80 hover:opacity-100',
+        isInteractive && 'cursor-pointer hover:scale-[1.03]',
+        active
+          ? 'ring-2 ring-offset-2 ring-offset-notion-bg shadow-glow-sm'
+          : 'opacity-85 hover:opacity-100',
         className,
       )}
       style={{
-        backgroundColor: `${color}20`,
-        borderColor: `${color}60`,
-        color: color,
+        backgroundColor: `${color}22`,
+        borderColor: active ? color : `${color}55`,
+        color,
+        ['--tw-ring-color' as string]: color,
       }}
       onClick={onClick}
       dir="rtl"
@@ -52,6 +57,14 @@ export function Badge({
     >
       {emoji && <span>{emoji}</span>}
       <span>{label}</span>
+      {typeof count === 'number' && (
+        <span
+          className="min-w-[1.25rem] h-5 px-1.5 rounded-full text-[10px] font-bold flex items-center justify-center text-white"
+          style={{ backgroundColor: color }}
+        >
+          {count}
+        </span>
+      )}
       {onRemove && (
         <button
           type="button"

@@ -24,28 +24,32 @@ export function Popup() {
 
   return (
     <div
-      className="w-[320px] min-h-[200px] bg-notion-bg text-notion-text font-heebo p-5"
+      className="wa-lh-shell w-[320px] min-h-[240px] text-notion-text font-heebo p-5"
       dir="rtl"
-      style={{ fontFamily: "'Heebo', 'Assistant', Arial, sans-serif" }}
+      style={{ fontFamily: "'Heebo', 'Outfit', Arial, sans-serif" }}
     >
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-10 h-10 rounded-xl bg-notion-accent text-white flex items-center justify-center font-bold text-sm shrink-0">
+      <div className="flex items-center gap-3 mb-5">
+        <div className="w-11 h-11 rounded-[14px] wa-lh-accent-gradient text-brand-mist flex items-center justify-center font-bold text-sm shrink-0 wa-lh-brand shadow-[0_8px_20px_rgba(0,173,181,0.3)]">
           WA
         </div>
         <div className="text-right flex-1">
-          <h1 className="text-lg font-bold">{he.popup.title}</h1>
+          <h1 className="text-lg font-bold wa-lh-brand tracking-wide">{he.popup.title}</h1>
           <p className="text-xs text-notion-muted">{he.popup.subtitle}</p>
         </div>
       </div>
 
-      <div className="bg-notion-surface border border-notion-border rounded-xl p-3 mb-4 space-y-2">
+      <div className="wa-lh-surface rounded-[16px] p-3.5 mb-4 space-y-3">
         <div className="flex justify-between items-center text-sm">
-          <span className="text-green-600 font-medium">{he.popup.active}</span>
-          <span className="text-notion-muted">{he.popup.status}</span>
+          <span className="inline-flex items-center gap-1.5 text-notion-success font-semibold">
+            <span className="h-1.5 w-1.5 rounded-full bg-notion-success" />
+            {he.popup.active}
+          </span>
+          <span className="text-notion-muted text-xs">{he.popup.status}</span>
         </div>
+        <div className="h-px bg-notion-border" />
         <div className="flex justify-between items-center text-sm">
-          <span className="font-medium">{contactsCount}</span>
-          <span className="text-notion-muted">{he.popup.contactsCount}</span>
+          <span className="font-bold text-notion-accent tabular-nums text-base">{contactsCount}</span>
+          <span className="text-notion-muted text-xs">{he.popup.contactsCount}</span>
         </div>
       </div>
 
@@ -59,7 +63,7 @@ export function Popup() {
         href={PRIVACY_POLICY_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="block text-center text-xs text-notion-muted hover:text-notion-accent mt-4 hover:underline"
+        className="block text-center text-xs text-notion-muted hover:text-notion-accent mt-4 transition-colors"
       >
         {he.popup.privacyPolicy}
       </a>

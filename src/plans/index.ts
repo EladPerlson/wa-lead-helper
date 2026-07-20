@@ -4,6 +4,9 @@ export interface PlanLimits {
   taggedCustomers: number;
   remindersPerDay: number;
   templates: number;
+  /** free = lifetime once; pro = per calendar month; unlimited = Infinity */
+  aiSuggestions: number;
+  aiPeriod: 'lifetime' | 'month' | 'none';
 }
 
 export interface PlanInfo {
@@ -22,6 +25,8 @@ export const PLANS: Record<PlanId, PlanInfo> = {
       taggedCustomers: 3,
       remindersPerDay: 1,
       templates: 2,
+      aiSuggestions: 1,
+      aiPeriod: 'lifetime',
     },
   },
   pro: {
@@ -32,6 +37,8 @@ export const PLANS: Record<PlanId, PlanInfo> = {
       taggedCustomers: 12,
       remindersPerDay: 6,
       templates: 6,
+      aiSuggestions: 30,
+      aiPeriod: 'month',
     },
   },
   unlimited: {
@@ -42,6 +49,8 @@ export const PLANS: Record<PlanId, PlanInfo> = {
       taggedCustomers: Infinity,
       remindersPerDay: Infinity,
       templates: Infinity,
+      aiSuggestions: Infinity,
+      aiPeriod: 'none',
     },
   },
 };

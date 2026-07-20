@@ -4,21 +4,25 @@ import { getPlanLimits, normalizePlanId, type PlanId } from '@/plans';
 import { getStorageItem, setStorageItem } from '@/storage';
 import { supabase } from '@/supabase/client';
 import type { Settings } from '@/types';
+import { getAiUsage, type AiUsageInfo } from '@/utils/openai';
 
 export interface SubscriptionState {
   plan: PlanId;
   limits: ReturnType<typeof getPlanLimits>;
+  aiUsage: AiUsageInfo | null;
   loading: boolean;
   refresh: () => Promise<void>;
 }
 
 export function useSubscription(session: Session | null): SubscriptionState {
   const [plan, setPlan] = useState<PlanId>('free');
+  const [aiUsage, setAiUsage] = useState<AiUsageInfo | null>(null);
   const [loading, setLoading] = useState(Boolean(session));
 
   const refresh = useCallback(async () => {
     if (!session?.user?.id || !supabase) {
       setPlan('free');
+      setAiUsage(null);
       setLoading(false);
       return;
     }
@@ -40,6 +44,9 @@ export function useSubscription(session: Session | null): SubscriptionState {
     } else {
       setPlan('free');
     }
+
+    const usage = await getAiUsage();
+    setAiUsage(usage);
     setLoading(false);
   }, [session?.user?.id]);
 
@@ -58,6 +65,7 @@ export function useSubscription(session: Session | null): SubscriptionState {
   return {
     plan,
     limits: getPlanLimits(plan),
+    aiUsage,
     loading,
     refresh,
   };
