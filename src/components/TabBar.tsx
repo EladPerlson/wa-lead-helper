@@ -120,8 +120,8 @@ export function TabBar({ activeTab, onTabChange, showAdmin = false, totalLeads =
   }, [moreOpen]);
 
   return (
-    <div className="shrink-0 px-2.5 pt-2 pb-2.5 border-b border-notion-border/80 bg-notion-bg/70 backdrop-blur-md" dir="rtl">
-      <div className="flex items-stretch gap-1 p-1 rounded-[18px] bg-notion-surface/70 border border-notion-border shadow-[inset_0_1px_0_rgba(238,238,238,0.04)]">
+    <div className="shrink-0 px-2.5 pt-2 pb-2.5 border-b border-notion-border/80 bg-notion-bg/70 backdrop-blur-md overflow-visible" dir="rtl">
+      <div className="relative flex items-stretch gap-1 p-1 rounded-[18px] bg-notion-surface/70 border border-notion-border shadow-[inset_0_1px_0_rgba(238,238,238,0.04)]" ref={menuRef}>
         {PRIMARY.map((tab) => (
           <TabButton
             key={tab.id}
@@ -132,45 +132,43 @@ export function TabBar({ activeTab, onTabChange, showAdmin = false, totalLeads =
           />
         ))}
 
-        <div className="relative flex shrink-0" ref={menuRef}>
-          <button
-            type="button"
-            onClick={() => setMoreOpen((v) => !v)}
-            className={cn(
-              'flex flex-col items-center justify-center gap-1 px-2.5 py-2.5 min-w-[52px] text-[10px] font-bold rounded-2xl transition-all duration-200',
-              moreOpen || secondaryActive
-                ? 'text-brand-ink bg-brand-mist shadow-glow-sm'
-                : 'text-notion-muted hover:text-notion-text hover:bg-notion-surface2/80',
-            )}
-          >
-            <IconMore className="w-4 h-4" />
-            <span className="leading-tight">{he.tabs.more}</span>
-          </button>
-
-          {moreOpen && (
-            <div className="absolute top-full right-0 left-auto mt-2 z-[60] min-w-[168px] rounded-2xl wa-lh-glass p-1.5 space-y-0.5 shadow-notion-lg border border-notion-accent/20">
-              {secondary.map((tab) => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => {
-                    onTabChange(tab.id);
-                    setMoreOpen(false);
-                  }}
-                  className={cn(
-                    'w-full flex items-center gap-2 px-3 py-2.5 text-xs font-semibold rounded-xl text-right transition-colors',
-                    activeTab === tab.id
-                      ? 'bg-notion-accent text-brand-mist'
-                      : 'text-notion-muted hover:bg-notion-soft hover:text-notion-text',
-                  )}
-                >
-                  <span>{tab.icon}</span>
-                  <span className="flex-1">{tab.label}</span>
-                </button>
-              ))}
-            </div>
+        <button
+          type="button"
+          onClick={() => setMoreOpen((v) => !v)}
+          className={cn(
+            'flex shrink-0 flex-col items-center justify-center gap-1 px-2.5 py-2.5 min-w-[52px] text-[10px] font-bold rounded-2xl transition-all duration-200',
+            moreOpen || secondaryActive
+              ? 'text-brand-ink bg-brand-mist shadow-glow-sm'
+              : 'text-notion-muted hover:text-notion-text hover:bg-notion-surface2/80',
           )}
-        </div>
+        >
+          <IconMore className="w-4 h-4" />
+          <span className="leading-tight">{he.tabs.more}</span>
+        </button>
+
+        {moreOpen && (
+          <div className="absolute top-[calc(100%+6px)] inset-x-1 z-[60] rounded-2xl wa-lh-glass p-1.5 space-y-0.5 shadow-notion-lg border border-notion-accent/20">
+            {secondary.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => {
+                  onTabChange(tab.id);
+                  setMoreOpen(false);
+                }}
+                className={cn(
+                  'w-full flex items-center gap-2 px-3 py-2.5 text-xs font-semibold rounded-xl text-right transition-colors',
+                  activeTab === tab.id
+                    ? 'bg-notion-accent text-brand-mist'
+                    : 'text-notion-muted hover:bg-notion-soft hover:text-notion-text',
+                )}
+              >
+                <span>{tab.icon}</span>
+                <span className="flex-1">{tab.label}</span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {typeof totalLeads === 'number' && (
